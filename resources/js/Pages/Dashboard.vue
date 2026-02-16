@@ -16,7 +16,7 @@
                     class="overflow-hidden bg-white shadow-sm sm:rounded-lg"
                 >
                     <div class="p-6 text-gray-900">
-                       {{ $t('dashboard.welcome') }}
+                       {{ $t('welcome') }}
                     </div>
                 </div>
             </div>

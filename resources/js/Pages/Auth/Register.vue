@@ -4,19 +4,19 @@
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="name" value="Nom" />
+                <InputLabel for="username" value="Nom d'utilisateur" />
 
                 <TextInput
-                    id="name"
+                    id="username"
                     type="text"
                     class="mt-1 block w-full"
-                    v-model="form.name"
+                    v-model="form.username"
                     required
                     autofocus
-                    autocomplete="name"
+                    autocomplete="username"
                 />
 
-                <InputError class="mt-2" :message="form.errors.name" />
+                <InputError class="mt-2" :message="form.errors.username" />
             </div>
 
             <div class="mt-4">
@@ -28,7 +28,7 @@
                     class="mt-1 block w-full"
                     v-model="form.email"
                     required
-                    autocomplete="username"
+                    autocomplete="email"
                 />
 
                 <InputError class="mt-2" :message="form.errors.email" />
@@ -100,7 +100,7 @@ import { trans } from 'laravel-vue-i18n';
 
 
 const form = useForm({
-    name: '',
+    username: '',
     email: '',
     password: '',
     password_confirmation: '',
