@@ -21,11 +21,36 @@
                 </div>
             </div>
         </div>
+        <form @submit.prevent="submit" class="p-6 bg-white rounded shadow">
+        <input 
+            v-model="form.name" 
+            type="text" 
+            placeholder="Nom de la Kapsule" 
+            class="border-gray-300 rounded-md shadow-sm"
+        />
+        <button type="submit" :disabled="form.processing" class="ml-4 px-4 py-2 bg-blue-600 text-white rounded">
+            Créer
+        </button>
+    </form>
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { trans } from 'laravel-vue-i18n';
+import { useForm } from '@inertiajs/vue3';
+
+const form = useForm({
+    name: '',
+});
+
+const submit = () => {
+    form.post(route('kapsules.store'), {
+        onSuccess: () => {
+            form.reset();
+            alert('Kapsule créée !');
+        },
+    });
+};
 </script>
 
