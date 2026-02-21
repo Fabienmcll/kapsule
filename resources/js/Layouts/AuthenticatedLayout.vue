@@ -23,7 +23,7 @@
                                     :href="route('dashboard')"
                                     :active="route().current('dashboard')"
                                 >
-                                    Dashboard
+                                    {{ $t('dashboard') }}
                                 </NavLink>
                             </div>
                         </div>
@@ -60,14 +60,14 @@
                                         <DropdownLink
                                             :href="route('profile.edit')"
                                         >
-                                            Profile
+                                            {{ $t('profile') }}
                                         </DropdownLink>
                                         <DropdownLink
                                             :href="route('logout')"
                                             method="post"
                                             as="button"
                                         >
-                                            Log Out
+                                            {{ $t('logout') }}
                                         </DropdownLink>
                                     </template>
                                 </Dropdown>
@@ -130,7 +130,7 @@
                             :href="route('dashboard')"
                             :active="route().current('dashboard')"
                         >
-                            Dashboard
+                            {{ $t('dashboard') }}
                         </ResponsiveNavLink>
                     </div>
 
@@ -151,14 +151,14 @@
 
                         <div class="mt-3 space-y-1">
                             <ResponsiveNavLink :href="route('profile.edit')">
-                                Profile
+                                {{ $t('profile') }}
                             </ResponsiveNavLink>
                             <ResponsiveNavLink
                                 :href="route('logout')"
                                 method="post"
                                 as="button"
                             >
-                                Log Out
+                                {{ $t('logout') }}
                             </ResponsiveNavLink>
                         </div>
                     </div>
@@ -181,6 +181,6 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
-
+import { trans } from 'laravel-vue-i18n';
 const showingNavigationDropdown = ref(false);
 </script>
