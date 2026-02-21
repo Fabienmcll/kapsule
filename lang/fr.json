@@ -1,6 +1,6 @@
 {
     "login": "Connexion",
-    "notRegister": "Vous n'avez pas de compte ? S'inscrire", 
+    "notRegister": "Vous n'avez pas de compte ? S'inscrire",
     "forgot_password": "Mot de passe oublié ?",
     "alreadyRegistered": "Déjà inscrit ? Se connecter",
     "remember": "Se souvenir de moi",
@@ -13,5 +13,10 @@
     "cancel": "Annuler",
     "delete": "Supprimer",
     "edit": "Modifier",
-    "back": "Retour"
+    "back": "Retour",
+    "create": "Créer",
+    "kapsule_created": "Kapsule créée avec succès",
+    "create_kapsule": "Créer une Kapsule",
+    "name_kapsule": "Nom de la Kapsule",
+    "description_kapsule": "Description de la Kapsule"
 }

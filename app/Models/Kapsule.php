@@ -10,7 +10,8 @@ class Kapsule extends Model
     protected $fillable = [
         'user_id', 
         'name', 
-        'share_code' 
+        'share_code',
+        'description'
     ];
 
     public function user()

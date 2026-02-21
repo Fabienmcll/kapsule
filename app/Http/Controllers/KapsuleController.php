@@ -11,6 +11,7 @@ class KapsuleController extends Controller
     {
        $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:255',
         ]);
 
         Auth::user()->kapsules()->create($validated);
