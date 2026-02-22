@@ -37,5 +37,8 @@
     "current_password": "Mot de passe actuel",
     "delete_account_warning": "Une fois votre compte supprimé, toutes ses ressources et données seront définitivement effacées. Avant de supprimer votre compte, veuillez télécharger les données ou informations que vous souhaitez conserver.",
     "delete_account_confirm": "Êtes-vous sûr de vouloir supprimer votre compte ?",
-    "delete_account_password_prompt": "Une fois votre compte supprimé, toutes ses ressources et données seront définitivement effacées. Veuillez entrer votre mot de passe pour confirmer que vous souhaitez supprimer définitivement votre compte."
+    "delete_account_password_prompt": "Une fois votre compte supprimé, toutes ses ressources et données seront définitivement effacées. Veuillez entrer votre mot de passe pour confirmer que vous souhaitez supprimer définitivement votre compte.",
+    "share_code": "Code de partage",
+    "code_copied": "Code copié avec succès",
+    "your_kapsules": "Vos Kapsules"
 }

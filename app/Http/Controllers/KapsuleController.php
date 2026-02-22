@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 
 class KapsuleController extends Controller
 {
+    /**
+     * Enregistrer une nouvelle kapsule
+     */
     public function store(Request $request)
     {
        $validated = $request->validate([

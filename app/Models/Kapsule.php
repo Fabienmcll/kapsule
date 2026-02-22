@@ -22,8 +22,11 @@ class Kapsule extends Model
     protected static function booted()
     {
         static::creating(function ($kapsule) {
-            if (! $kapsule->share_code) {
-                $kapsule->share_code = strtoupper(Str::random(8));
+           if (! $kapsule->share_code) {
+                $part1 = strtoupper(Str::random(3)); 
+                $part2 = strtoupper(Str::random(3)); 
+                $part3 = Str::password(2, letters: false, symbols: false, numbers: true);
+                $kapsule->share_code = "{$part1}-{$part2}-{$part3}";
             }
         });
     }
