@@ -31,6 +31,7 @@ class Kapsule extends Model
         });
     }
 
+    //Méthode pour récupérer les membres d'une kapsule
     public function members() {
         return $this->belongsToMany(User::class, 'kapsule_user');
     }

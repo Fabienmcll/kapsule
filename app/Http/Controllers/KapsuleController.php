@@ -29,6 +29,8 @@ class KapsuleController extends Controller
         if ($kapsule) {
             // Logique pour ajouter l'utilisateur à la kapsule
             // Par exemple, créer une relation entre l'utilisateur et la kapsule
+
+            //Nouvelle méthode pour attacher l'utilisateur à la kapsule via la relation many-to-many
             Auth::user()->joinedKapsules()->attach($kapsule->id);
 
             return back()->with('success', 'Vous avez rejoint la kapsule avec succès !');

@@ -51,6 +51,7 @@ class User extends Authenticatable
         return $this->hasMany(Kapsule::class);
     }
 
+    //Méthode pour récupérer les kapsules que l'utilisateur a rejointes
     public function joinedKapsules() {
         return $this->belongsToMany(Kapsule::class, 'kapsule_user');
     }

@@ -31,6 +31,8 @@ class DashboardController extends Controller
             }
         }
 
+        // Récupérer les IDs des kapsules créées et rejointes par l'utilisateur
+
         $created = $request->user()->kapsules()->pluck('id')->toArray();
         $joined  = $request->user()->joinedKapsules()->pluck('id')->toArray();
 

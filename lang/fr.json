@@ -43,5 +43,17 @@
     "your_kapsules": "Vos Kapsules",
     "search_placeholder": "Rechercher...",
     "date_asc": "Date croissante",
-    "date_desc": "Date décroissante"
+    "date_desc": "Date décroissante",
+    "join_kapsule": "Rejoindre une Kapsule",
+    "enter_share_code": "Entrez le code de partage de la Kapsule",
+    "join": "Rejoindre",
+    "kapsule_not_found": "Aucune Kapsule trouvée avec ce code.",
+    "kapsule_joined": "Vous avez rejoint la Kapsule",
+    "with_success": "avec succès !",
+    "are_you_sure": "Êtes-vous sûr de vouloir rejoindre la Kapsule de :name ?",
+    "code_placeholder": "Entrez le code de partage de la Kapsule",
+    "with_joining_this": "En rejoignant cette Kapsule, vous aurez accès à son contenu et pourrez collaborer avec les autres membres.",
+    "please_enter_confirm_code": "Veuillez entrer un code de partage valide.",
+    "you_joined_kapsule": "Vous avez rejoint la Kapsule :name avec succès !",
+    "impossible_join_kapsule": "Impossible de rejoindre la Kapsule :name."
 }

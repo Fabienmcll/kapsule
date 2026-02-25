@@ -8,7 +8,7 @@
                 class="px-4 flex items-center gap-2 hover:bg-blue-700 hover:cursor-pointer py-2 bg-blue-600 text-white rounded"
             >
                 <UserGroupIcon class="h-5 w-5" />
-                Rejoindre une Kapsule
+                {{ $t("join_kapsule") }}
             </button>
         </div>
 
@@ -17,7 +17,7 @@
                 <input
                     v-model="codeToJoin"
                     type="text"
-                    placeholder="Code de partage"
+                    :placeholder="$t('code_placeholder')"
                     class="border-gray-300 bg-gray-900 text-white w-full rounded-md shadow-sm"
                 />
             </div>
@@ -25,33 +25,30 @@
                 @click="searchWithCode(codeToJoin)"
                 class="w-full bg-blue-600 text-white py-2 rounded-b-md"
             >
-                Rejoindre
+                {{ $t("join") }}
             </button>
         </Modal>
 
         <Modal :show="showAreYouSureModal" @close="showAreYouSureModal = false">
             <div class="p-6 bg-gray-900 text-white">
                 <h2 class="text-xl font-bold">
-                    Êtes-vous sûr de vouloir rejoindre la kapsule "{{
-                        kapsuleWithCode.name
-                    }}" de {{ userOfTheKapsuleWithCode.username }} ?
+                    {{ trans("are_you_sure", { name: kapsuleWithCode.name }) }}
                 </h2>
                 <p class="mt-4">
-                    En rejoignant cette Kapsule, vous aurez accès à son contenu
-                    et pourrez collaborer avec les autres membres.
+                    {{ $t("with_joining_this") }}
                 </p>
                 <div class="mt-6 flex justify-end gap-4">
                     <button
                         @click="showAreYouSureModal = false"
                         class="px-4 py-2 bg-gray-700 text-white rounded"
                     >
-                        Annuler
+                        {{ $t("cancel") }}
                     </button>
                     <button
                         @click="confirmJoin()"
                         class="px-4 py-2 bg-blue-600 text-white rounded"
                     >
-                        Rejoindre
+                        {{ $t("join") }}
                     </button>
                 </div>
             </div>
@@ -343,7 +340,7 @@ const showAreYouSureModal = ref(false);
 
 const searchWithCode = (code) => {
     if (code.trim() === "") {
-        toast.error("Veuillez entrer un code de partage valide.");
+        toast.error(trans("please_enter_confirm_code"));
         return;
     }
     router.get(
@@ -358,19 +355,18 @@ const searchWithCode = (code) => {
                     Object.keys(page.props.kapsuleWithCode).length > 0
                 ) {
                     kapsuleWithCode.value = page.props.kapsuleWithCode;
-
-                    toast.success("Kapsule trouvée !");
                     showAreYouSureModal.value = true;
                     showJoinModal.value = false;
                     //TODO: Rediriger vers la page de la Kapsule trouvée
                 } else {
-                    toast.error("Aucune Kapsule trouvée avec ce code.");
+                    toast.error(trans("kapsule_not_found"));
                 }
             },
         },
     );
 };
 const confirmJoin = () => {
+    //TODO : vérifier que l'utilisateur n'est pas déjà membre de la Kapsule avant de faire la requête / propriétaire
     if (!kapsuleWithCode.value.id) {
         toast.error("Aucune Kapsule sélectionnée !");
         return;
@@ -381,12 +377,18 @@ const confirmJoin = () => {
         {
             onSuccess: () => {
                 toast.success(
-                    `Vous avez rejoint la Kapsule "${kapsuleWithCode.name}" !`,
+                    trans("joined_kapsule_success", {
+                        name: kapsuleWithCode.value.name,
+                    }),
                 );
                 showAreYouSureModal.value = false;
             },
             onError: (errors) => {
-                toast.error("Impossible de rejoindre cette Kapsule.");
+                toast.error(
+                    trans("joined_kapsule_error", {
+                        message: errors.message || "Une erreur est survenue",
+                    }),
+                );
             },
         },
     );
