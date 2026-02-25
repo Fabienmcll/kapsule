@@ -57,13 +57,22 @@
 
         <!-- Barre de recherche -->
 
-        <div class="search-wrapper w-full mt-6 mb-4 px-6">
+        <div class="w-full mt-6 mb-4 px-6 flex gap-4 items-center">
             <input
                 type="text"
                 :placeholder="$t('search_placeholder')"
-                class="search-input bg-blue-900 border-gray-700 text-white w-full rounded-md shadow-sm px-4 py-2"
+                class="bg-blue-900 border-gray-700 text-white w-full rounded-md shadow-sm px-4 py-2"
                 v-model="searchQuery"
             />
+
+            <select
+                v-model="order"
+                @change="changeDateOrder(order)"
+                class="bg-blue-900 border-gray-700 text-white rounded-md shadow-sm px-4 py-2"
+            >
+                <option value="asc">Date croissante</option>
+                <option value="desc">Date décroissante</option>
+            </select>
         </div>
 
         <!-- Kapsules list -->
@@ -137,6 +146,7 @@
                             route('dashboard', {
                                 page: pageNumber,
                                 q: searchQuery,
+                                dateOrder: dateOrder,
                             })
                         "
                         class="w-full h-full flex items-center justify-center"
@@ -174,6 +184,7 @@ const props = defineProps({
     totalPages: Number,
     totalKapsules: Number,
     currentPage: Number,
+    dateOrder: String,
 });
 
 const totalKapsules = ref(props.totalKapsules);
@@ -181,6 +192,9 @@ const totaPagesNumber = ref(props.totalPages);
 const currentPage = ref(props.currentPage);
 
 const searchQuery = ref(props.searchQuery || "");
+const dateOrder = ref(props.dateOrder || "desc"); // Valeur par défaut si non fournie
+
+const order = ref(dateOrder.value);
 
 const form = useForm({
     name: "",
@@ -211,15 +225,13 @@ function copyToClipboard(text) {
 const searchKapsules = debounce((q) => {
     router.get(
         route("dashboard"),
-        { q, page: 1 },
+        { q, page: 1, dateOrder: dateOrder.value },
         {
             preserveState: true,
             replace: true,
             onSuccess: (page) => {
                 // Mettre à jour les kapsules et la pagination avec les nouvelles données
-                totalKapsules.value = page.props.totalKapsules;
-                totaPagesNumber.value = page.props.totalPages;
-                currentPage.value = page.props.currentPage;
+                updateFilters(page);
             },
         },
     );
@@ -242,4 +254,27 @@ const pagesToShow = computed(() => {
     console.log(pages);
     return pages;
 });
+
+// Fonction pour changer l'ordre de tri des dates
+const changeDateOrder = (order) => {
+    dateOrder.value = order;
+    router.get(
+        route("dashboard"),
+        { q: searchQuery.value, dateOrder: order, page: currentPage.value },
+        {
+            preserveState: true,
+            replace: true,
+            onSuccess: (page) => {
+                updateFilters(page);
+            },
+        },
+    );
+};
+
+//Fonctyion pour mettre à jour les filtres
+const updateFilters = (page) => {
+    totalKapsules.value = page.props.totalKapsules;
+    totaPagesNumber.value = page.props.totalPages;
+    currentPage.value = page.props.currentPage;
+};
 </script>
