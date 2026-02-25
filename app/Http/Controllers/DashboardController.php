@@ -12,8 +12,18 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
+        $q = $request->input('q');
+
+        $kapsules = $request->user()->kapsules()
+            ->when($q, fn($query) => $query->where('name', 'like', "%{$q}%")
+                                        ->orWhere('description', 'like', "%{$q}%"))
+            ->get();
+
         return Inertia::render('Dashboard', [
-            'kapsules' => $request->user()->kapsules,
+            'kapsules' => $kapsules,
+            'searchQuery' => $q ?? '',
         ]);
     }
+
+   
 }
