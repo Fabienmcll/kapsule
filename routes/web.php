@@ -24,4 +24,6 @@ Route::middleware('auth')->group(function () {
 
 Route::post('/kapsules', [KapsuleController::class, 'store'])->name('kapsules.store');
 
+Route::post('/kapsules/{kapsule}/join', [KapsuleController::class, 'join'])->name('kapsules.join');
+
 require __DIR__.'/auth.php';

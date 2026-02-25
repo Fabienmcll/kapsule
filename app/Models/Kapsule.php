@@ -30,4 +30,8 @@ class Kapsule extends Model
             }
         });
     }
+
+    public function members() {
+        return $this->belongsToMany(User::class, 'kapsule_user');
+    }
 }

@@ -50,4 +50,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Kapsule::class);
     }
+
+    public function joinedKapsules() {
+        return $this->belongsToMany(Kapsule::class, 'kapsule_user');
+    }
 }

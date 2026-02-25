@@ -4,6 +4,61 @@
     <AuthenticatedLayout>
         <div class="flex justify-end p-6">
             <button
+                @click="showJoinModal = true"
+                class="px-4 flex items-center gap-2 hover:bg-blue-700 hover:cursor-pointer py-2 bg-blue-600 text-white rounded"
+            >
+                <UserGroupIcon class="h-5 w-5" />
+                Rejoindre une Kapsule
+            </button>
+        </div>
+
+        <Modal :show="showJoinModal" @close="showJoinModal = false">
+            <div class="p-6 bg-gray-900 text-white">
+                <input
+                    v-model="codeToJoin"
+                    type="text"
+                    placeholder="Code de partage"
+                    class="border-gray-300 bg-gray-900 text-white w-full rounded-md shadow-sm"
+                />
+            </div>
+            <button
+                @click="searchWithCode(codeToJoin)"
+                class="w-full bg-blue-600 text-white py-2 rounded-b-md"
+            >
+                Rejoindre
+            </button>
+        </Modal>
+
+        <Modal :show="showAreYouSureModal" @close="showAreYouSureModal = false">
+            <div class="p-6 bg-gray-900 text-white">
+                <h2 class="text-xl font-bold">
+                    Êtes-vous sûr de vouloir rejoindre la kapsule "{{
+                        kapsuleWithCode.name
+                    }}" de {{ userOfTheKapsuleWithCode.username }} ?
+                </h2>
+                <p class="mt-4">
+                    En rejoignant cette Kapsule, vous aurez accès à son contenu
+                    et pourrez collaborer avec les autres membres.
+                </p>
+                <div class="mt-6 flex justify-end gap-4">
+                    <button
+                        @click="showAreYouSureModal = false"
+                        class="px-4 py-2 bg-gray-700 text-white rounded"
+                    >
+                        Annuler
+                    </button>
+                    <button
+                        @click="confirmJoin()"
+                        class="px-4 py-2 bg-blue-600 text-white rounded"
+                    >
+                        Rejoindre
+                    </button>
+                </div>
+            </div>
+        </Modal>
+
+        <div class="flex justify-end p-6">
+            <button
                 @click="showModal = true"
                 class="px-4 flex items-center gap-2 hover:bg-blue-700 hover:cursor-pointer py-2 bg-blue-600 text-white rounded"
             >
@@ -37,6 +92,7 @@
                             class="border-gray-300 bg-gray-900 text-white w-full h-40 rounded-md shadow-sm"
                         ></textarea>
                     </div>
+
                     <button
                         type="submit"
                         :disabled="form.processing"
@@ -70,8 +126,8 @@
                 @change="changeDateOrder(order)"
                 class="bg-blue-900 border-gray-700 text-white rounded-md shadow-sm px-4 py-2"
             >
-                <option value="asc">Date croissante</option>
-                <option value="desc">Date décroissante</option>
+                <option value="asc">{{ $t("date_asc") }}</option>
+                <option value="desc">{{ $t("date_desc") }}</option>
             </select>
         </div>
 
@@ -177,6 +233,7 @@ import { router } from "@inertiajs/vue3";
 
 const showModal = ref(false);
 const toast = useToast();
+const showJoinModal = ref(false);
 
 const props = defineProps({
     kapsules: Array,
@@ -185,6 +242,8 @@ const props = defineProps({
     totalKapsules: Number,
     currentPage: Number,
     dateOrder: String,
+    kapsuleWithCode: Object,
+    userOfTheKapsuleWithCode: Object,
 });
 
 const totalKapsules = ref(props.totalKapsules);
@@ -195,6 +254,7 @@ const searchQuery = ref(props.searchQuery || "");
 const dateOrder = ref(props.dateOrder || "desc"); // Valeur par défaut si non fournie
 
 const order = ref(dateOrder.value);
+const kapsuleWithCode = ref(props.kapsuleWithCode || {});
 
 const form = useForm({
     name: "",
@@ -276,5 +336,59 @@ const updateFilters = (page) => {
     totalKapsules.value = page.props.totalKapsules;
     totaPagesNumber.value = page.props.totalPages;
     currentPage.value = page.props.currentPage;
+};
+
+const codeToJoin = ref("");
+const showAreYouSureModal = ref(false);
+
+const searchWithCode = (code) => {
+    if (code.trim() === "") {
+        toast.error("Veuillez entrer un code de partage valide.");
+        return;
+    }
+    router.get(
+        route("dashboard"),
+        { codeToJoin: code },
+        {
+            preserveState: true,
+            replace: true,
+            onSuccess: (page) => {
+                if (
+                    page.props.kapsuleWithCode &&
+                    Object.keys(page.props.kapsuleWithCode).length > 0
+                ) {
+                    kapsuleWithCode.value = page.props.kapsuleWithCode;
+
+                    toast.success("Kapsule trouvée !");
+                    showAreYouSureModal.value = true;
+                    showJoinModal.value = false;
+                    //TODO: Rediriger vers la page de la Kapsule trouvée
+                } else {
+                    toast.error("Aucune Kapsule trouvée avec ce code.");
+                }
+            },
+        },
+    );
+};
+const confirmJoin = () => {
+    if (!kapsuleWithCode.value.id) {
+        toast.error("Aucune Kapsule sélectionnée !");
+        return;
+    }
+    router.post(
+        route("kapsules.join", kapsuleWithCode.value.id),
+        {},
+        {
+            onSuccess: () => {
+                toast.success(
+                    `Vous avez rejoint la Kapsule "${kapsuleWithCode.name}" !`,
+                );
+                showAreYouSureModal.value = false;
+            },
+            onError: (errors) => {
+                toast.error("Impossible de rejoindre cette Kapsule.");
+            },
+        },
+    );
 };
 </script>

@@ -41,5 +41,7 @@
     "share_code": "Code de partage",
     "code_copied": "Code copié avec succès",
     "your_kapsules": "Vos Kapsules",
-    "search_placeholder": "Rechercher..."
+    "search_placeholder": "Rechercher...",
+    "date_asc": "Date croissante",
+    "date_desc": "Date décroissante"
 }
