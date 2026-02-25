@@ -54,14 +54,20 @@
         >
             {{ $t("your_kapsules") }}
         </h2>
+
+        <!-- Barre de recherche -->
+
         <div class="search-wrapper w-full mt-6 mb-4 px-6">
             <input
                 type="text"
-                placeholder="Search..."
+                :placeholder="$t('search_placeholder')"
                 class="search-input bg-blue-900 border-gray-700 text-white w-full rounded-md shadow-sm px-4 py-2"
                 v-model="searchQuery"
             />
         </div>
+
+        <!-- Kapsules list -->
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div v-for="kapsule in kapsules" :key="kapsule.id" class="p-6">
                 <div
@@ -113,15 +119,42 @@
                 </div>
             </div>
         </div>
+        <div>
+            <div class="flex justify-center items-center gap-3 mt-6">
+                <div
+                    v-if="totalPages != 1"
+                    v-for="pageNumber in pagesToShow"
+                    :key="pageNumber"
+                    :class="[
+                        'flex items-center justify-center w-8 h-8 rounded-full text-white hover:bg-gray-600 cursor-pointer',
+                        pageNumber === currentPage
+                            ? 'bg-blue-600'
+                            : 'bg-gray-700',
+                    ]"
+                >
+                    <Link
+                        :href="
+                            route('dashboard', {
+                                page: pageNumber,
+                                q: searchQuery,
+                            })
+                        "
+                        class="w-full h-full flex items-center justify-center"
+                    >
+                        {{ pageNumber }}
+                    </Link>
+                </div>
+            </div>
+        </div>
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head } from "@inertiajs/vue3";
+import { Head, Link } from "@inertiajs/vue3";
 import { trans } from "laravel-vue-i18n";
 import { useForm } from "@inertiajs/vue3";
 import Modal from "@/Components/Modal.vue";
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { debounce } from "lodash";
 import {
     PlusIcon,
@@ -138,7 +171,14 @@ const toast = useToast();
 const props = defineProps({
     kapsules: Array,
     searchQuery: String,
+    totalPages: Number,
+    totalKapsules: Number,
+    currentPage: Number,
 });
+
+const totalKapsules = ref(props.totalKapsules);
+const totaPagesNumber = ref(props.totalPages);
+const currentPage = ref(props.currentPage);
 
 const searchQuery = ref(props.searchQuery || "");
 
@@ -167,21 +207,39 @@ function copyToClipboard(text) {
     toast.success(trans("code_copied"));
 }
 
+// Fonctions de recherche avec debounce pour éviter les requêtes à chaque frappe
 const searchKapsules = debounce((q) => {
-    console.log("Searching for 2:", q);
     router.get(
         route("dashboard"),
-        { q },
+        { q, page: 1 },
         {
             preserveState: true,
             replace: true,
-            onSuccess: (page) => (kapsules.value = page.props.kapsules),
+            onSuccess: (page) => {
+                // Mettre à jour les kapsules et la pagination avec les nouvelles données
+                totalKapsules.value = page.props.totalKapsules;
+                totaPagesNumber.value = page.props.totalPages;
+                currentPage.value = page.props.currentPage;
+            },
         },
     );
 }, 300);
 
+// Watch pour déclencher la recherche à chaque changement de la requête de recherche
 watch(searchQuery, (q) => {
-    console.log("Searching for:", q);
     searchKapsules(q);
+});
+
+//Recupérer les numéros de pages à afficher dans la pagination
+const pagesToShow = computed(() => {
+    const side = 3;
+    console.log("Current page:", currentPage.value);
+    console.log("Total pages:", totaPagesNumber.value);
+    const start = Math.max(currentPage.value - side, 1);
+    const end = Math.min(currentPage.value + side, totaPagesNumber.value);
+    let pages = [];
+    for (let i = start; i <= end; i++) pages.push(i);
+    console.log(pages);
+    return pages;
 });
 </script>

@@ -40,5 +40,6 @@
     "delete_account_password_prompt": "Une fois votre compte supprimé, toutes ses ressources et données seront définitivement effacées. Veuillez entrer votre mot de passe pour confirmer que vous souhaitez supprimer définitivement votre compte.",
     "share_code": "Code de partage",
     "code_copied": "Code copié avec succès",
-    "your_kapsules": "Vos Kapsules"
+    "your_kapsules": "Vos Kapsules",
+    "search_placeholder": "Rechercher..."
 }

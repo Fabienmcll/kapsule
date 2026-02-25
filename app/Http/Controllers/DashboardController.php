@@ -12,15 +12,22 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
+
+        // Récuperer la requête de recherche
+
         $q = $request->input('q');
 
         $kapsules = $request->user()->kapsules()
             ->when($q, fn($query) => $query->where('name', 'like', "%{$q}%")
                                         ->orWhere('description', 'like', "%{$q}%"))
-            ->get();
+            ->paginate(8);
+        // Retourner les kapsules à la vue avec Inertia avec les résultats de la recherche
 
         return Inertia::render('Dashboard', [
-            'kapsules' => $kapsules,
+            'kapsules' => $kapsules->items(),
+            'totalPages' => $kapsules->lastPage(),
+            'totalKapsules' => $kapsules->total(),
+            'currentPage' => $kapsules->currentPage(),
             'searchQuery' => $q ?? '',
         ]);
     }
