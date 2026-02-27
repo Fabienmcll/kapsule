@@ -32,7 +32,7 @@
         <Modal :show="showAreYouSureModal" @close="showAreYouSureModal = false">
             <div class="p-6 bg-gray-900 text-white">
                 <h2 class="text-xl font-bold">
-                    {{ trans("are_you_sure", { name: kapsuleWithCode.name }) }}
+                    {{ trans("are_you_sure", { kapsulename: kapsuleWithCode.name, name: userOfTheKapsuleWithCode.username }) }}
                 </h2>
                 <p class="mt-4">
                     {{ $t("with_joining_this") }}
@@ -252,6 +252,7 @@ const dateOrder = ref(props.dateOrder || "desc"); // Valeur par défaut si non f
 
 const order = ref(dateOrder.value);
 const kapsuleWithCode = ref(props.kapsuleWithCode || {});
+const userOfTheKapsuleWithCode = ref(props.userOfTheKapsuleWithCode || null);
 
 const form = useForm({
     name: "",

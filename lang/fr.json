@@ -50,7 +50,7 @@
     "kapsule_not_found": "Aucune Kapsule trouvée avec ce code.",
     "kapsule_joined": "Vous avez rejoint la Kapsule",
     "with_success": "avec succès !",
-    "are_you_sure": "Êtes-vous sûr de vouloir rejoindre la Kapsule de :name ?",
+    "are_you_sure": "Êtes-vous sûr de vouloir rejoindre la Kapsule :kapsulename de :name ?",
     "code_placeholder": "Entrez le code de partage de la Kapsule",
     "with_joining_this": "En rejoignant cette Kapsule, vous aurez accès à son contenu et pourrez collaborer avec les autres membres.",
     "please_enter_confirm_code": "Veuillez entrer un code de partage valide.",
