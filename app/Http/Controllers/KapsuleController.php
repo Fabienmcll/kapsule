@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Kapsule; 
+use Inertia\Inertia;
 
 class KapsuleController extends Controller
 {
@@ -37,5 +38,14 @@ class KapsuleController extends Controller
         } else {
             return back()->with('error', 'Aucune kapsule trouvée avec ce code.');
         }
+    }
+
+    public function load(Kapsule $kapsule)
+    {
+        return Inertia::render('Kapsule', [
+            'kapsule' => $kapsule->only(['id', 'name', 'description']),
+            'owner' => $kapsule->user()->first()->only(['id', 'username']),
+            'members' => $kapsule->members()->get()->map(fn($member) => $member->only(['id', 'username'])),
+        ]);
     }
 }

@@ -132,6 +132,9 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div v-for="kapsule in kapsules" :key="kapsule.id" class="p-6">
+            <Link
+                    :href="route('kapsule.load', kapsule.id)"
+                    class="block h-full">
                 <div
                     class="border border-gray-700 w-full p-5 rounded-xl dark:bg-gray-800 text-white shadow-sm hover:shadow-md transition-shadow"
                 >
@@ -179,6 +182,8 @@
                         </div>
                     </div>
                 </div>
+
+            </Link>
             </div>
         </div>
         <div>
