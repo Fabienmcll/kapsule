@@ -11,6 +11,7 @@
         <div v-for="member in members" :key="member.id">
             - {{ member.username }}
         </div>
+        - {{ owner.username }} (propriétaire)
         </div>
 
         
