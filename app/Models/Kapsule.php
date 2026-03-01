@@ -36,10 +36,13 @@ class Kapsule extends Model implements HasMedia
         });
     }
 
-    //Méthode pour récupérer les membres d'une kapsule
-    public function members() {
-        return $this->belongsToMany(User::class, 'kapsule_user');
-    }
+    //Méthode pour récupérer les membres d'une kapsule AVEC les champs de la table pivot
+    public function members()
+{
+    return $this->belongsToMany(User::class, 'kapsule_user')
+        ->withPivot('accepted', 'is_pending')
+        ;
+}
 
     // Permet de générer automatiquement des miniatures
     public function registerMediaConversions(Media $media = null): void

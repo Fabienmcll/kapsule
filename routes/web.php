@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function () {
         ->name('kapsule.load');
     Route::post('/media/upload', [MediaController::class , 'store'])->name('media.upload');
     Route::post('/kapsules/{kapsule}/join', [KapsuleController::class , 'join'])->name('kapsules.join');
+    Route::post('/kapsules/{kapsule}/accept/{member}', [KapsuleController::class , 'accept'])->name('kapsules.accept');
+    Route::post('/kapsules/{kapsule}/reject/{member}', [KapsuleController::class , 'reject'])->name('kapsules.reject');
 });
 
 require __DIR__.'/auth.php';
