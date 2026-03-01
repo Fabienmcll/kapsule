@@ -26,13 +26,10 @@ watch(
         if (props.show) {
             document.body.style.overflow = 'hidden';
             showSlot.value = true;
-
-            dialog.value?.showModal();
         } else {
             document.body.style.overflow = '';
 
             setTimeout(() => {
-                dialog.value?.close();
                 showSlot.value = false;
             }, 200);
         }
@@ -75,8 +72,9 @@ const maxWidthClass = computed(() => {
 </script>
 
 <template>
-    <dialog
-        class="z-50 m-0 min-h-full min-w-full overflow-y-auto bg-transparent backdrop:bg-transparent"
+    <div
+        v-show="show"
+        class="fixed inset-0 z-50 m-0 min-h-full min-w-full overflow-y-auto bg-transparent"
         ref="dialog"
     >
         <div
@@ -119,5 +117,5 @@ const maxWidthClass = computed(() => {
                 </div>
             </Transition>
         </div>
-    </dialog>
+    </div>
 </template>

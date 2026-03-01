@@ -54,6 +54,7 @@
     "code_placeholder": "Entrez le code de partage de la Kapsule",
     "with_joining_this": "En rejoignant cette Kapsule, vous aurez accès à son contenu et pourrez collaborer avec les autres membres.",
     "please_enter_confirm_code": "Veuillez entrer un code de partage valide.",
+    "name_required": "Le nom de la Kapsule est requis.",
     "you_joined_kapsule": "Vous avez rejoint la Kapsule :name avec succès !",
     "impossible_join_kapsule": "Impossible de rejoindre la Kapsule.",
     "already_member_of_kapsule": "Vous êtes déjà membre de la Kapsule."

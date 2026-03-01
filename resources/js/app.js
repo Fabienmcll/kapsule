@@ -22,14 +22,16 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
-            .use(Toast)
+            .use(Toast, {
+                containerClassName: "z-[99999]",
+            })
             .use(i18nVue, {
                 lang: 'fr',
-    resolve: async (lang) => {
-        const langs = import.meta.glob('../../lang/*.json');
-        return await langs[`../../lang/${lang}.json`]();
-    }
-})
+                resolve: async (lang) => {
+                    const langs = import.meta.glob('../../lang/*.json');
+                    return await langs[`../../lang/${lang}.json`]();
+                }
+            })
             .mount(el);
     },
     progress: {

@@ -12,6 +12,7 @@
             </button>
         </div>
 
+        <!-- Modal pour rejoindre une kapsule -->
         <Modal :show="showJoinModal" @close="showJoinModal = false">
             <div class="p-6 bg-gray-900 text-white">
                 <input
@@ -29,6 +30,7 @@
             </button>
         </Modal>
 
+                <!-- Modal de confirmation pour rejoindre la kapsule -->
         <Modal :show="showAreYouSureModal" @close="showAreYouSureModal = false">
             <div class="p-6 bg-gray-900 text-white z-0">
                 <h2 class="text-xl font-bold">
@@ -57,19 +59,22 @@
         <div class="flex justify-end p-6">
             <button
                 @click="showModal = true"
-                class="px-4 flex items-center gap-2 hover:bg-blue-700 hover:cursor-pointer py-2 bg-blue-600 text-white rounded"
+                class="px-4 flex items-center gap-2 hover:bg-blue-700 hover:cursor-pointer py-2 bg-green-600 text-white rounded"
             >
                 <PlusIcon class="h-5 w-5" />
                 {{ $t("create_kapsule") }}
             </button>
         </div>
+
+        <!-- Modal de création de la kapsule -->
         <Modal :show="showModal" @close="showModal = false">
             <div class="p-6 bg-gray-900 text-white">
                 <h2 class="text-xl font-bold">{{ $t("create_kapsule") }}</h2>
                 <form @submit.prevent="submit" class="mt-6">
                     <label for="name" class="block text-sm font-bold">{{
-                        $t("name_kapsule")
-                    }}</label>
+                        $t("name_kapsule")}}
+                        <span class="text-red-500">*</span>
+                    </label>
                     <input
                         v-model="form.name"
                         type="text"
@@ -129,7 +134,6 @@
         </div>
 
         <!-- Kapsules list -->
-
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div v-for="kapsule in kapsules" :key="kapsule.id" class="p-6">
             <Link
@@ -168,7 +172,7 @@
                             </span>
 
                             <div
-                                @click="copyToClipboard(kapsule.share_code)"
+                                @click.stop.prevent="copyToClipboard(kapsule.share_code)"
                                 class="flex cursor-pointer items-center justify-between gap-3 bg-gray-900/50 border border-gray-600 px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors group"
                             >
                                 <code
@@ -229,6 +233,7 @@ import {
     FolderPlusIcon,
     FolderIcon,
     ClipboardDocumentIcon,
+    UserGroupIcon
 } from "@heroicons/vue/24/solid";
 import { useToast } from "vue-toastification";
 import { router } from "@inertiajs/vue3";
@@ -267,6 +272,10 @@ const form = useForm({
 });
 
 const submit = () => {
+    if (form.name.trim() === "") {
+        toast.error(trans("name_required"));
+        return;
+    }
     form.post(route("kapsules.store"), {
         onSuccess: () => {
             form.reset();
