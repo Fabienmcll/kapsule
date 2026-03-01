@@ -5,7 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\KapsuleController;
-
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
@@ -27,7 +27,8 @@ Route::post('/kapsules', [KapsuleController::class, 'store'])->name('kapsules.st
 Route::middleware('auth')->group(function () {
     Route::get('/kapsule/{kapsule}', [KapsuleController::class, 'load'])
         ->name('kapsule.load');
+    Route::post('/media/upload', [MediaController::class , 'store'])->name('media.upload');
+    Route::post('/kapsules/{kapsule}/join', [KapsuleController::class , 'join'])->name('kapsules.join');
 });
-Route::post('/kapsules/{kapsule}/join', [KapsuleController::class, 'join'])->name('kapsules.join');
 
 require __DIR__.'/auth.php';

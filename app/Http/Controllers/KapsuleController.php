@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Kapsule; 
+use App\Models\Kapsule;
 use Inertia\Inertia;
 
 class KapsuleController extends Controller
@@ -47,6 +47,17 @@ class KapsuleController extends Controller
             'kapsule' => $kapsule->only(['id', 'name', 'description']),
             'owner' => $kapsule->user()->first()->only(['id', 'username']),
             'members' => $kapsule->members()->get()->map(fn($member) => $member->only(['id', 'username'])),
+            'media' => $kapsule->getMedia('images')->map(function ($item) {
+            return [
+                    'id' => $item->id,
+                    'url' => $item->getUrl(),
+                    'thumb' => $item->hasGeneratedConversion('preview') ? $item->getUrl('preview') : $item->getUrl(),
+                    'file_name' => $item->file_name,
+                    'mime_type' => $item->mime_type,
+                    'size' => $item->human_readable_size,
+                ];
+        }),
+
         ]);
     }
 }
