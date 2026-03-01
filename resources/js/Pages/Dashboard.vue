@@ -30,7 +30,7 @@
         </Modal>
 
         <Modal :show="showAreYouSureModal" @close="showAreYouSureModal = false">
-            <div class="p-6 bg-gray-900 text-white">
+            <div class="p-6 bg-gray-900 text-white z-0">
                 <h2 class="text-xl font-bold">
                     {{ trans("are_you_sure", { kapsulename: kapsuleWithCode.name, name: userOfTheKapsuleWithCode.username }) }}
                 </h2>
@@ -218,7 +218,7 @@
 </template>
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, Link } from "@inertiajs/vue3";
+import { Head, Link, usePage } from "@inertiajs/vue3";
 import { trans } from "laravel-vue-i18n";
 import { useForm } from "@inertiajs/vue3";
 import Modal from "@/Components/Modal.vue";
@@ -232,6 +232,8 @@ import {
 } from "@heroicons/vue/24/solid";
 import { useToast } from "vue-toastification";
 import { router } from "@inertiajs/vue3";
+
+const page = usePage();
 
 const showModal = ref(false);
 const toast = useToast();
@@ -372,6 +374,7 @@ const searchWithCode = (code) => {
     );
 };
 const confirmJoin = () => {
+
     //TODO : vérifier que l'utilisateur n'est pas déjà membre de la Kapsule avant de faire la requête / propriétaire
     if (!kapsuleWithCode.value.id) {
         toast.error("Aucune Kapsule sélectionnée !");
@@ -381,20 +384,19 @@ const confirmJoin = () => {
         route("kapsules.join", kapsuleWithCode.value.id),
         {},
         {
-            onSuccess: () => {
-                toast.success(
-                    trans("joined_kapsule_success", {
-                        name: kapsuleWithCode.value.name,
-                    }),
-                );
-                showAreYouSureModal.value = false;
-            },
-            onError: (errors) => {
-                toast.error(
-                    trans("joined_kapsule_error", {
-                        message: errors.message || "Une erreur est survenue",
-                    }),
-                );
+            onFinish: () => {
+                // On récupère les flash messages depuis les props mises à jour (Inertia)
+                const flash = page.props.flash;
+                
+                if (flash.success) {
+                    toast.success(flash.success);
+                    showAreYouSureModal.value = false;
+                }
+                
+                if (flash.error) {
+                    toast.error(flash.error);
+                    showAreYouSureModal.value = false;
+                }
             },
         },
     );

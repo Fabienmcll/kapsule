@@ -7,7 +7,7 @@
 
         <p>{{ kapsule.description }} par {{ owner.username }}</p>
 
-        <p>Membres : {{ members.length }}</p>
+        <p>Membres : {{ members.length + 1}}</p>
         <div v-for="member in members" :key="member.id">
             - {{ member.username }}
         </div>

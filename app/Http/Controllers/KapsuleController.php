@@ -26,17 +26,18 @@ class KapsuleController extends Controller
 
     public function join (Request $request, Kapsule $kapsule)
     {
-
-        if ($kapsule) {
+        if ($kapsule && !$kapsule->members()->where('user_id', Auth::id())->exists() && $kapsule->user_id !== Auth::id()) {
             // Logique pour ajouter l'utilisateur à la kapsule
             // Par exemple, créer une relation entre l'utilisateur et la kapsule
 
             //Nouvelle méthode pour attacher l'utilisateur à la kapsule via la relation many-to-many
             Auth::user()->joinedKapsules()->attach($kapsule->id);
 
-            return back()->with('success', 'Vous avez rejoint la kapsule avec succès !');
+            return back()->with('success', __('you_joined_kapsule', ['kapsulename' => $kapsule->name]));
+        } else if (!$kapsule) {
+            return back()->with('error', __('kapsule_not_found'));
         } else {
-            return back()->with('error', 'Aucune kapsule trouvée avec ce code.');
+            return back()->with('error', __('already_member_of_kapsule'));
         }
     }
 
