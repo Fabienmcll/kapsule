@@ -25,6 +25,15 @@
                 >
                     Rejeter la demande
                 </button>
+                <button
+                    v-if="amIOwner && !member.is_pending"
+                    @click="
+                        memberToBanId = member.id;
+                        showBanModal = true;
+                    "
+                >
+                    Bannir le membre
+                </button>
             </div>
             - {{ owner.username }} (propriétaire)
         </div>
@@ -81,6 +90,14 @@
             @close="showRejectModal = false"
             @rejected="members = members.filter((m) => m.id !== $event)"
         />
+        <BanKapsuleModal
+            :show="showBanModal"
+            :member="members.find((m) => m.id === memberToBanId)"
+            :kapsule="kapsule"
+            :allMembers="members"
+            @close="showBanModal = false"
+            @rejected="members = members.filter((m) => m.id !== $event)"
+        />
     </AuthenticatedLayout>
 </template>
 
@@ -91,6 +108,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import FileUpload from "@/Components/FileUpload.vue";
 import AcceptKapsuleModal from "./Partials/AcceptKapsuleModal.vue";
 import RejectKapsuleModal from "./Partials/RejectKapsuleModal.vue";
+import BanKapsuleModal from "./Partials/BanKapsuleModal.vue";
 
 const props = defineProps({
     kapsule: Object,
@@ -111,6 +129,9 @@ const amIPending = ref(props.isPending);
 
 const showAcceptModal = ref(false);
 const showRejectModal = ref(false);
+const showBanModal = ref(false);
+
+const memberToBanId = ref(null);
 
 const amIOwner = ref(owner.value.id === page.props.auth.user.id);
 

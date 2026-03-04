@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/kapsules/{kapsule}/join', [KapsuleController::class , 'join'])->name('kapsules.join');
     Route::post('/kapsules/{kapsule}/accept/{member}', [KapsuleController::class , 'accept'])->name('kapsules.accept');
     Route::post('/kapsules/{kapsule}/reject/{member}', [KapsuleController::class , 'reject'])->name('kapsules.reject');
+    Route::post('/kapsules/{kapsule}/ban/{member}', [KapsuleController::class , 'ban'])->name('kapsules.ban');
 });
 
 require __DIR__.'/auth.php';

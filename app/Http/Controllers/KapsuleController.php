@@ -111,4 +111,22 @@ class KapsuleController extends Controller
     
             return back()->with('success', __('membership_request_rejected'));
         }
+
+        public function ban(Request $request, Kapsule $kapsule, $member)
+        {
+    
+            // Vérifier que l'utilisateur actuel est le propriétaire de la kapsule
+            if ($kapsule->user_id !== Auth::id()) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+    
+            // Mettre à jour le statut de la demande d'adhésion dans la table pivot
+            $kapsule->members()->updateExistingPivot($member, [
+                'accepted' => false,
+                'is_pending' => false,
+                'is_banned' => true,
+            ]);
+    
+            return back()->with('success', __('member_banned_successfully'));
+        }
 }
