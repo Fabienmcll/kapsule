@@ -15,13 +15,19 @@
                 <!-- Si on est proprio et que le membre est en attente, on affiche les boutons d'acceptation/rejet -->
                 <button
                     v-if="amIOwner && member.is_pending"
-                    @click="showAcceptModal = true"
+                    @click="
+                        memberToAcceptOrReject = member;
+                        showAcceptModal = true;
+                    "
                 >
                     Accepter la demande
                 </button>
                 <button
                     v-if="amIOwner && member.is_pending"
-                    @click="showRejectModal = true"
+                    @click="
+                        memberToAcceptOrReject = member;
+                        showRejectModal = true;
+                    "
                 >
                     Rejeter la demande
                 </button>
@@ -37,6 +43,14 @@
             </div>
             - {{ owner.username }} (propriétaire)
         </div>
+
+        <Link
+            v-if="amIOwner"
+            :href="route('kapsules.banned-users', { kapsule: kapsule.id })"
+            class="m-8 inline-block hover:underline"
+        >
+            Voir les utilisateurs bannis
+        </Link>
         <!-- Si vous voyez ce message, c'est que vous n'avez pas encore été accepté dans la kapsule. -->
         <p v-if="amIPending">
             Votre demande d'adhésion à la kapsule est en attente.
@@ -69,7 +83,7 @@
         </div>
         <AcceptKapsuleModal
             :show="showAcceptModal"
-            :member="members.find((m) => m.is_pending)"
+            :member="memberToAcceptOrReject"
             :kapsule="kapsule"
             :allMembers="members"
             @close="showAcceptModal = false"
@@ -84,7 +98,7 @@
         <!-- rejected : Supprimer la l'utilisateur de la liste des membres après rejet -->
         <RejectKapsuleModal
             :show="showRejectModal"
-            :member="members.find((m) => m.is_pending)"
+            :member="memberToAcceptOrReject"
             :kapsule="kapsule"
             :allMembers="members"
             @close="showRejectModal = false"
@@ -103,7 +117,7 @@
 
 <script setup>
 import { ref } from "vue";
-import { Head, usePage } from "@inertiajs/vue3";
+import { Head, Link, usePage } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import FileUpload from "@/Components/FileUpload.vue";
 import AcceptKapsuleModal from "./Partials/AcceptKapsuleModal.vue";
@@ -131,6 +145,7 @@ const showAcceptModal = ref(false);
 const showRejectModal = ref(false);
 const showBanModal = ref(false);
 
+const memberToAcceptOrReject = ref(null);
 const memberToBanId = ref(null);
 
 const amIOwner = ref(owner.value.id === page.props.auth.user.id);

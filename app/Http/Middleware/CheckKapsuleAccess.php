@@ -26,6 +26,10 @@ class CheckKapsuleAccess
             abort(403, __('access_denied_to_kapsule'));
         }
 
+        if ($kapsule->members()->where('user_id', $user->id)->wherePivot('accepted', false)->exists()) {
+            abort(403, __('your_membership_request_is_pending'));
+        }
+
         return $next($request);
     }
 }
