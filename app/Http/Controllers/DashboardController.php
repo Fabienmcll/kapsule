@@ -35,8 +35,10 @@ class DashboardController extends Controller
 
         $created = $request->user()->kapsules()->pluck('id')->toArray();
         $joined = $request->user()->joinedKapsules()->pluck('id')->toArray();
+        $banned = $request->user()->joinedKapsules()->wherePivot('is_banned', true)->pluck('id')->toArray();
 
         $allIds = array_unique(array_merge($created, $joined));
+        $allIds = array_diff($allIds, $banned); // Exclure les kapsules dont l'utilisateur est banni
 
         $kapsules = Kapsule::whereIn('id', $allIds)
             ->when($q, fn($query) => $query->where('name', 'like', "%{$q}%")

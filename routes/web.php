@@ -25,8 +25,10 @@ Route::middleware('auth')->group(function () {
 Route::post('/kapsules', [KapsuleController::class, 'store'])->name('kapsules.store');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/kapsule/{kapsule}', [KapsuleController::class, 'load'])
-        ->name('kapsule.load');
+    Route::middleware('App\Http\Middleware\CheckKapsuleAccess')->group(function () {
+        Route::get('/kapsule/{kapsule}', [KapsuleController::class, 'load'])
+            ->name('kapsule.load');
+    });
     Route::post('/media/upload', [MediaController::class , 'store'])->name('media.upload');
     Route::post('/kapsules/{kapsule}/join', [KapsuleController::class , 'join'])->name('kapsules.join');
     Route::post('/kapsules/{kapsule}/accept/{member}', [KapsuleController::class , 'accept'])->name('kapsules.accept');

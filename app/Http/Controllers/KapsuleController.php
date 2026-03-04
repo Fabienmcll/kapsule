@@ -26,9 +26,10 @@ class KapsuleController extends Controller
 
     public function join (Request $request, Kapsule $kapsule)
     {
-        if ($kapsule && !$kapsule->members()->where('user_id', Auth::id())->exists() && $kapsule->user_id !== Auth::id()) {
+        if ($kapsule && !$kapsule->members()->where('user_id', Auth::id())->exists() && $kapsule->user_id !== Auth::id() && !$kapsule->members()->where('user_id', Auth::id())->wherePivot('is_banned', true)->exists()) {
             // Logique pour ajouter l'utilisateur à la kapsule
             // Par exemple, créer une relation entre l'utilisateur et la kapsule
+
 
             //Nouvelle méthode pour attacher l'utilisateur à la kapsule via la relation many-to-many
             Auth::user()->joinedKapsules()->attach($kapsule->id);
@@ -36,6 +37,8 @@ class KapsuleController extends Controller
             return back()->with('success', __('you_joined_kapsule', ['kapsulename' => $kapsule->name]));
         } else if (!$kapsule) {
             return back()->with('error', __('kapsule_not_found'));
+        } else if ($kapsule->members()->where('user_id', Auth::id())->wherePivot('is_banned', true)->exists()) {
+            return back()->with('error', __('you_are_banned_from_this_kapsule'));
         } else {
             return back()->with('error', __('already_member_of_kapsule'));
         }
