@@ -43,14 +43,9 @@
             </div>
             - {{ owner.username }} (propriétaire)
         </div>
-
-        <Link
-            v-if="amIOwner"
-            :href="route('kapsules.banned-users', { kapsule: kapsule.id })"
-            class="m-8 inline-block hover:underline"
-        >
-            Voir les utilisateurs bannis
-        </Link>
+        <button v-if="amIOwner" @click="showParametersModal = true">
+            Parametres de la kapsule
+        </button>
         <!-- Si vous voyez ce message, c'est que vous n'avez pas encore été accepté dans la kapsule. -->
         <p v-if="amIPending">
             Votre demande d'adhésion à la kapsule est en attente.
@@ -112,6 +107,11 @@
             @close="showBanModal = false"
             @rejected="members = members.filter((m) => m.id !== $event)"
         />
+        <ParametersKapsuleModal
+            :show="showParametersModal"
+            :kapsule="kapsule"
+            @close="showParametersModal = false"
+        />
     </AuthenticatedLayout>
 </template>
 
@@ -123,6 +123,7 @@ import FileUpload from "@/Components/FileUpload.vue";
 import AcceptKapsuleModal from "./Partials/AcceptKapsuleModal.vue";
 import RejectKapsuleModal from "./Partials/RejectKapsuleModal.vue";
 import BanKapsuleModal from "./Partials/BanKapsuleModal.vue";
+import ParametersKapsuleModal from "../Dashboard/Partials/ParametersKapsuleModal.vue";
 
 const props = defineProps({
     kapsule: Object,
@@ -144,6 +145,7 @@ const amIPending = ref(props.isPending);
 const showAcceptModal = ref(false);
 const showRejectModal = ref(false);
 const showBanModal = ref(false);
+const showParametersModal = ref(false);
 
 const memberToAcceptOrReject = ref(null);
 const memberToBanId = ref(null);

@@ -30,12 +30,14 @@ Route::middleware('auth')->group(function () {
     });
     Route::post('/media/upload', [MediaController::class, 'store'])->name('media.upload');
     Route::post('/kapsules/{kapsule}/join', [KapsuleController::class, 'join'])->name('kapsules.join');
-    Route::post('/kapsules/{kapsule}/accept/{member}', [KapsuleController::class, 'accept'])->name('kapsules.accept');
-    Route::post('/kapsules/{kapsule}/reject/{member}', [KapsuleController::class, 'reject'])->name('kapsules.reject');
     Route::middleware('App\Http\Middleware\CheckIfOwnerKapsule')->group(function () {
         Route::post('/kapsules/{kapsule}/ban/{member}', [KapsuleController::class, 'ban'])->name('kapsules.ban');
         Route::get('/kapsules/{kapsule}/banned-users', [UsersBannedKapsuleController::class, 'index'])->name('kapsules.banned-users');
         Route::post('/kapsules/{kapsule}/unban/{member}', [UsersBannedKapsuleController::class, 'unban'])->name('kapsules.unban');
+        Route::post('/kapsules/{kapsule}/accept/{member}', [KapsuleController::class, 'accept'])->name('kapsules.accept');
+        Route::post('/kapsules/{kapsule}/reject/{member}', [KapsuleController::class, 'reject'])->name('kapsules.reject');
+        Route::get('/kapsules/{kapsule}/edit', [KapsuleController::class, 'edit'])->name('kapsules.edit');
+        Route::post('/kapsules/{kapsule}/modify', [KapsuleController::class, 'modify'])->name('kapsules.modify');
     });
 });
 
