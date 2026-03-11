@@ -187,12 +187,14 @@
             :kapsule="kapsule"
             :allMembers="members"
             @close="showBanModal = false"
-            @rejected="members = members.filter((m) => m.id !== $event)"
+            @rejected="handleMemberBanned"
         />
         <ParametersKapsuleModal
             :show="showParametersModal"
             :kapsule="kapsule"
+            :bannedUsers="bannedUsers"
             @close="showParametersModal = false"
+            @unbanned="handleMemberUnbanned"
         />
     </AuthenticatedLayout>
 </template>
@@ -225,6 +227,10 @@ const props = defineProps({
     media: Array,
     isAccepted: Boolean,
     isPending: Boolean,
+    bannedUsers: {
+        type: Array,
+        default: () => []
+    },
 });
 
 const toast = useToast();
@@ -244,12 +250,14 @@ const page = usePage();
 const owner = ref(props.owner);
 const kapsule = ref(props.kapsule);
 const members = ref(props.members);
+const bannedUsers = ref(props.bannedUsers);
 const amIAccepted = ref(props.isAccepted);
 const amIPending = ref(props.isPending);
 
 watch(() => props.kapsule, (newKapsule) => kapsule.value = newKapsule);
 watch(() => props.owner, (newOwner) => owner.value = newOwner);
 watch(() => props.members, (newMembers) => members.value = newMembers);
+watch(() => props.bannedUsers, (newBanned) => bannedUsers.value = newBanned);
 
 const showAcceptModal = ref(false);
 const showRejectModal = ref(false);
@@ -264,4 +272,20 @@ const amIOwner = computed(() => owner.value.id === page.props.auth.user.id);
 const amIMember = ref(
     members.value.some((member) => member.id === page.props.auth.user.id),
 );
+
+const handleMemberBanned = (memberId) => {
+    const bannedMember = members.value.find((m) => m.id === memberId);
+    if (bannedMember) {
+        bannedUsers.value = [
+            ...bannedUsers.value,
+            { id: bannedMember.id, username: bannedMember.username }
+        ];
+        members.value = members.value.filter((m) => m.id !== memberId);
+    }
+    showBanModal.value = false;
+};
+
+const handleMemberUnbanned = (userId) => {
+    bannedUsers.value = bannedUsers.value.filter((u) => u.id !== userId);
+};
 </script>

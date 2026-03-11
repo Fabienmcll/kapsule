@@ -21,6 +21,17 @@ class DashboardController extends Controller
         $orderDate = $request->input('dateOrder', 'desc');
 
         $shareCode = $request->input('shareCode');
+        $codeToJoin = $request->input('codeToJoin');
+
+        $kapsuleWithCode = null;
+        $userOfTheKapsuleWithCode = null;
+
+        if ($codeToJoin) {
+            $kapsuleWithCode = Kapsule::where('share_code', $codeToJoin)->first();
+            if ($kapsuleWithCode) {
+                $userOfTheKapsuleWithCode = $kapsuleWithCode->user()->first();
+            }
+        }
 
         // Récupérer les IDs des kapsules créées et rejointes par l'utilisateur
 
@@ -60,6 +71,8 @@ class DashboardController extends Controller
             'searchQuery' => $q ?? '',
             'dateOrder' => $orderDate,
             'shareCode' => $shareCode ?? '',
+            'kapsuleWithCode' => $kapsuleWithCode,
+            'userOfTheKapsuleWithCode' => $userOfTheKapsuleWithCode,
         ]);
     }
 }

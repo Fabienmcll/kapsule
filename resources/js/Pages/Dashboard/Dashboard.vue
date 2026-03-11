@@ -286,9 +286,12 @@ const updateFilters = (page) => {
     searchCode.value = page.props.shareCode || "";
 };
 
+const kapsuleWithCode = ref(null);
+const userOfTheKapsuleWithCode = ref(null);
 const showAreYouSureModal = ref(false);
 const handleJoinSuccess = (kapsule) => {
     kapsuleWithCode.value = kapsule;
+    userOfTheKapsuleWithCode.value = page.props.userOfTheKapsuleWithCode;
     showAreYouSureModal.value = true;
     showJoinModal.value = false;
 };

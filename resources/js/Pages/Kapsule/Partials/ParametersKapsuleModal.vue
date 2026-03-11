@@ -121,7 +121,7 @@ const props = defineProps({
     }
 });
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["close", "unbanned"]);
 
 const toast = useToast();
 const showAreYouSureModal = ref(false);
@@ -172,6 +172,7 @@ const unbanUser = async (userId) => {
                 if (flash.success) {
                     toast.success(flash.success);
                     showAreYouSureModal.value = false;
+                    emit("unbanned", userId);
                 } else if (flash.error) {
                     toast.error(flash.error);
                 }

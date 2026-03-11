@@ -40,7 +40,7 @@ class Kapsule extends Model implements HasMedia
     public function members()
 {
     return $this->belongsToMany(User::class, 'kapsule_user')
-        ->withPivot('accepted', 'is_pending')
+        ->withPivot('accepted', 'is_pending', 'is_banned')
         ;
 }
 

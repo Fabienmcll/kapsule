@@ -63,12 +63,21 @@ class KapsuleController extends Controller
         // On récupère uniquement les membres acceptés ou en attente, et on réindexe la collection
         $members = $allMembers->where(fn($member) => $member['accepted'] || $member['is_pending'])->values();
 
+        $bannedUsers = $kapsule->members()
+            ->wherePivot('is_banned', true)
+            ->get()
+            ->map(fn($user) => [
+        'id' => $user->id,
+        'username' => $user->username,
+        ]);
+
         return Inertia::render('Kapsule/Kapsule', [
             'kapsule' => $kapsule->only(['id', 'name', 'description', 'share_code']),
             'owner' => $kapsule->user()->first()->only(['id', 'username']),
             'isAccepted' => $isAccepted,
             'isPending' => $isPending,
             'members' => $members,
+            'bannedUsers' => $bannedUsers,
             'media' => $kapsule->getMedia('images')->map(function ($item) {
             return [
                     'id' => $item->id,
