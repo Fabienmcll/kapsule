@@ -72,5 +72,19 @@
     "ban": "Bannir",
     "access_pending": "Accès en attente",
     "pending_message": "Votre demande d'adhésion est en cours d'examen par le propriétaire.",
-    "copy_code": "Copier le code"
+    "copy_code": "Copier le code",
+    "banned_users": "Utilisateurs bannis",
+    "no_banned_users": "Aucun utilisateur banni pour le moment.",
+    "unban": "Débannir",
+    "confirm_unban": "Êtes-vous sûr de vouloir débannir cet utilisateur ?",
+    "close": "Fermer",
+    "accept_request_title": "Accepter la demande de :name ?",
+    "reject_request_title": "Rejeter la demande de :name ?",
+    "ban_user_title": "Bannir :name de la Kapsule ?",
+    "unban_success": "Utilisateur débanni avec succès.",
+    "edit_kapsule": "Modifier la Kapsule",
+    "save_changes": "Enregistrer les modifications",
+    "kapsule_updated": "Kapsule mise à jour avec succès.",
+    "name_placeholder": "Nom de la Kapsule",
+    "description_placeholder": "Description de la Kapsule (optionnel)"
 }

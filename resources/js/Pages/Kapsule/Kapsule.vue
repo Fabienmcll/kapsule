@@ -58,7 +58,6 @@
                         </div>
 
                         <div class="space-y-4">
-                            <!-- Owner Entry -->
                             <div class="flex items-center justify-between p-3 rounded-xl bg-blue-500/10 border border-blue-500/20">
                                 <div class="flex items-center gap-3">
                                     <div class="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
@@ -199,14 +198,14 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch, computed } from "vue";
 import { Head, Link, usePage } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import FileUpload from "@/Components/FileUpload.vue";
 import AcceptKapsuleModal from "./Partials/AcceptKapsuleModal.vue";
 import RejectKapsuleModal from "./Partials/RejectKapsuleModal.vue";
 import BanKapsuleModal from "./Partials/BanKapsuleModal.vue";
-import ParametersKapsuleModal from "../Dashboard/Partials/ParametersKapsuleModal.vue";
+import ParametersKapsuleModal from "./Partials/ParametersKapsuleModal.vue";
 import { trans } from "laravel-vue-i18n";
 import { useToast } from "vue-toastification";
 import {
@@ -248,6 +247,10 @@ const members = ref(props.members);
 const amIAccepted = ref(props.isAccepted);
 const amIPending = ref(props.isPending);
 
+watch(() => props.kapsule, (newKapsule) => kapsule.value = newKapsule);
+watch(() => props.owner, (newOwner) => owner.value = newOwner);
+watch(() => props.members, (newMembers) => members.value = newMembers);
+
 const showAcceptModal = ref(false);
 const showRejectModal = ref(false);
 const showBanModal = ref(false);
@@ -256,7 +259,7 @@ const showParametersModal = ref(false);
 const memberToAcceptOrReject = ref(null);
 const memberToBanId = ref(null);
 
-const amIOwner = ref(owner.value.id === page.props.auth.user.id);
+const amIOwner = computed(() => owner.value.id === page.props.auth.user.id);
 
 const amIMember = ref(
     members.value.some((member) => member.id === page.props.auth.user.id),

@@ -1,22 +1,32 @@
 <template>
     <Modal v-if="member && kapsule" :show="show" @close="emit('close')">
-        <div class="p-6 bg-gray-800 rounded-lg">
-            <h2 class="text-xl mb-4">
-                Accepter la demande d'adhésion de {{ member.username }} à
-                {{ kapsule.name }} ?
-            </h2>
-            <div class="mt-6 flex justify-end gap-4">
+        <div class="p-8 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="h-12 w-12 rounded-full bg-green-900/30 flex items-center justify-center text-green-400 border border-green-500/20">
+                    <CheckIcon class="h-6 w-6" />
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">
+                        {{ $t('accept_request_title', { name: member.username }) }}
+                    </h3>
+                    <p class="text-gray-400 text-sm mt-1">
+                        {{ kapsule.name }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 mt-8">
                 <button
                     @click="emit('close')"
-                    class="px-4 py-2 bg-gray-700 text-white rounded"
+                    class="px-6 py-2.5 bg-gray-800 hover:bg-gray-700 text-white rounded-xl font-medium transition-colors border border-gray-700"
                 >
-                    Annuler
+                    {{ $t('cancel') }}
                 </button>
                 <button
                     @click="acceptRequest(member.id)"
-                    class="px-4 py-2 bg-green-600 text-white rounded"
+                    class="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold transition-colors shadow-lg shadow-green-900/20"
                 >
-                    Accepter
+                    {{ $t('accept') }}
                 </button>
             </div>
         </div>
@@ -26,8 +36,8 @@
 <script setup>
 import Modal from "@/Components/Modal.vue";
 import { router, usePage } from "@inertiajs/vue3";
-import { ref } from "vue";
 import { useToast } from "vue-toastification";
+import { CheckIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
     show: Boolean,
@@ -36,35 +46,27 @@ const props = defineProps({
     allMembers: Array,
 });
 
-const page = usePage();
-
-const kapsule = ref(props.kapsule);
-const members = ref(props.allMembers);
-
 const toast = useToast();
-
 const emit = defineEmits(["close", "accepted"]);
 
 const acceptRequest = (memberId) => {
     router.post(
-        `/kapsules/${kapsule.value.id}/accept/${memberId}`,
+        `/kapsules/${props.kapsule.id}/accept/${memberId}`,
         {},
         {
-            onSuccess: () => {
-                const member = members.value.find((m) => m.id === memberId);
-                if (member) {
-                    member.is_pending = false;
-                    member.accepted = true;
-                }
-            },
-            onFinish: () => {
-                const flash = usePage().props.flash;
+            onSuccess: (page) => {
+                const flash = page.props.flash;
                 if (flash.success) {
                     toast.success(flash.success);
                     emit("close");
                     emit("accepted", memberId);
+                } else if (flash.error) {
+                    toast.error(flash.error);
                 }
             },
+            onError: () => {
+                toast.error("Une erreur est survenue.");
+            }
         },
     );
 };

@@ -1,19 +1,27 @@
 <template>
-    <Modal v-if="member && kapsule" :show="show" @close="emit('close')">
-        <div class="p-6 bg-gray-800 rounded-lg">
-            <h2 class="text-xl mb-4">
-                {{ text }}
-            </h2>
-            <div class="mt-6 flex justify-end gap-4">
+    <Modal :show="show" @close="emit('close')">
+        <div class="p-8 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="h-12 w-12 rounded-full bg-blue-900/30 flex items-center justify-center text-blue-400 border border-blue-500/20">
+                    <ExclamationTriangleIcon class="h-6 w-6" />
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">
+                        {{ text }}
+                    </h3>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 mt-8">
                 <button
                     @click="emit('close')"
-                    class="px-4 py-2 bg-gray-700 text-white rounded"
+                    class="px-6 py-2.5 bg-gray-800 hover:bg-gray-700 text-white rounded-xl font-medium transition-colors border border-gray-700"
                 >
-                    Annuler
+                    {{ $t('cancel') }}
                 </button>
                 <button
-                    @click="acceptRequest(member.id)"
-                    class="px-4 py-2 bg-green-600 text-white rounded"
+                    @click="emit('accepted')"
+                    class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-colors shadow-lg shadow-blue-900/20"
                 >
                     {{ actionText }}
                 </button>
@@ -24,31 +32,13 @@
 
 <script setup>
 import Modal from "@/Components/Modal.vue";
-import { router, usePage } from "@inertiajs/vue3";
-import { ref } from "vue";
-import { useToast } from "vue-toastification";
+import { ExclamationTriangleIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
     show: Boolean,
-    member: Object,
-    kapsule: Object,
-    allMembers: Array,
     text: String,
     actionText: String,
 });
 
-const page = usePage();
-
-const kapsule = ref(props.kapsule);
-const members = ref(props.allMembers);
-const text = ref(props.text);
-const actionText = ref(props.actionText);
-
-const toast = useToast();
-
 const emit = defineEmits(["close", "accepted"]);
-
-const acceptRequest = (memberId) => {
-    emit("accepted", memberId);
-};
 </script>
