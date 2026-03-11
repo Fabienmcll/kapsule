@@ -60,5 +60,17 @@
     "you_joined_kapsule": "Vous avez rejoint la Kapsule :name avec succès !",
     "impossible_join_kapsule": "Impossible de rejoindre la Kapsule.",
     "already_member_of_kapsule": "Vous êtes déjà membre de la Kapsule.",
-    "search_by_code": "Entrer un code de partage"
+    "search_by_code": "Entrer un code de partage",
+    "owned_by": "Créé par",
+    "no_description": "Aucune description fournie.",
+    "parameters": "Paramètres",
+    "members": "Membres",
+    "owner": "Propriétaire",
+    "pending": "En attente",
+    "accept": "Accepter",
+    "reject": "Rejeter",
+    "ban": "Bannir",
+    "access_pending": "Accès en attente",
+    "pending_message": "Votre demande d'adhésion est en cours d'examen par le propriétaire.",
+    "copy_code": "Copier le code"
 }
