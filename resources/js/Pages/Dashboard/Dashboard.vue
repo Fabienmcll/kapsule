@@ -20,6 +20,16 @@
                     />
                 </div>
 
+                <div class="relative flex-1 max-w-md">
+                    <input
+                        id="searchCode"
+                        type="text"
+                        :placeholder="$t('search_by_code')"
+                        class="bg-blue-900 border-gray-700 text-white w-full rounded-md shadow-sm px-4 py-2"
+                        v-model="searchCode"
+                    />
+                </div>
+
                 <div class="flex items-center gap-2">
                     <label for="order" class="text-white font-bold whitespace-nowrap">{{ $t("sort_by") }} :</label>
                     <select
@@ -146,6 +156,7 @@
                             route('dashboard', {
                                 page: pageNumber,
                                 q: searchQuery,
+                                shareCode: searchCode,
                                 dateOrder: dateOrder,
                             })
                         "
@@ -178,7 +189,6 @@ import { useToast } from "vue-toastification";
 import { router } from "@inertiajs/vue3";
 
 const page = usePage();
-
 const showModal = ref(false);
 const toast = useToast();
 const showJoinModal = ref(false);
@@ -186,12 +196,11 @@ const showJoinModal = ref(false);
 const props = defineProps({
     kapsules: Array,
     searchQuery: String,
+    shareCode: String,
     totalPages: Number,
     totalKapsules: Number,
     currentPage: Number,
     dateOrder: String,
-    kapsuleWithCode: Object,
-    userOfTheKapsuleWithCode: Object,
 });
 
 const totalKapsules = ref(props.totalKapsules);
@@ -199,11 +208,10 @@ const totaPagesNumber = ref(props.totalPages);
 const currentPage = ref(props.currentPage);
 
 const searchQuery = ref(props.searchQuery || "");
+const searchCode = ref(props.shareCode || "");
 const dateOrder = ref(props.dateOrder || "desc"); // Valeur par défaut si non fournie
 
 const order = ref(dateOrder.value);
-const kapsuleWithCode = ref(props.kapsuleWithCode || {});
-const userOfTheKapsuleWithCode = ref(props.userOfTheKapsuleWithCode || null);
 
 function formatDate(dateString) {
     const date = new Date(dateString);
@@ -219,7 +227,7 @@ function copyToClipboard(text) {
 const searchKapsules = debounce((q) => {
     router.get(
         route("dashboard"),
-        { q, page: 1, dateOrder: dateOrder.value },
+        { q, shareCode: searchCode.value, page: 1, dateOrder: dateOrder.value },
         {
             preserveState: true,
             replace: true,
@@ -234,6 +242,11 @@ const searchKapsules = debounce((q) => {
 // Watch pour déclencher la recherche à chaque changement de la requête de recherche
 watch(searchQuery, (q) => {
     searchKapsules(q);
+});
+
+// Watch pour le code de partage
+watch(searchCode, (code) => {
+    searchKapsules(searchQuery.value);
 });
 
 //Recupérer les numéros de pages à afficher dans la pagination
@@ -254,7 +267,7 @@ const changeDateOrder = (order) => {
     dateOrder.value = order;
     router.get(
         route("dashboard"),
-        { q: searchQuery.value, dateOrder: order, page: currentPage.value },
+        { q: searchQuery.value, shareCode: searchCode.value, dateOrder: order, page: currentPage.value },
         {
             preserveState: true,
             replace: true,
@@ -270,6 +283,7 @@ const updateFilters = (page) => {
     totalKapsules.value = page.props.totalKapsules;
     totaPagesNumber.value = page.props.totalPages;
     currentPage.value = page.props.currentPage;
+    searchCode.value = page.props.shareCode || "";
 };
 
 const showAreYouSureModal = ref(false);

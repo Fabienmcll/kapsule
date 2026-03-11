@@ -20,29 +20,33 @@ class DashboardController extends Controller
 
         $orderDate = $request->input('dateOrder', 'desc');
 
-        $codeToJoin = $request->input('codeToJoin');
-        $kapsuleWithCode = null; //On définit la recherche de kapsule avec code à null par défaut
-        $userOfTheKapsuleWithCode = null; //On définit la recherche de l'utilisateur de la kapsule avec code à null par défaut
-
-        if ($codeToJoin) {
-            $kapsuleWithCode = Kapsule::where('share_code', $codeToJoin)->first();
-            if ($kapsuleWithCode) {
-                $userOfTheKapsuleWithCode = $kapsuleWithCode->user()->first();
-            }
-        }
+        $shareCode = $request->input('shareCode');
 
         // Récupérer les IDs des kapsules créées et rejointes par l'utilisateur
 
         $created = $request->user()->kapsules()->pluck('id')->toArray();
         $joined = $request->user()->joinedKapsules()->pluck('id')->toArray();
         $banned = $request->user()->joinedKapsules()->wherePivot('is_banned', true)->pluck('id')->toArray();
-        
+
 
         $allIds = array_unique(array_merge($created, $joined));
         $allIds = array_diff($allIds, $banned); // Exclure les kapsules dont l'utilisateur est banni
+
+        // Filtre de base : l'utilisateur ne voit que les Kapsules dont il est propriétaire ou membre
         $kapsules = Kapsule::whereIn('id', $allIds)
-            ->when($q, fn($query) => $query->where('name', 'like', "%{$q}%")
-        ->orWhere('description', 'like', "%{$q}%"))
+            // Si un 'shareCode' est fourni par le champ de recherche par code, on filtre par correspondance exacte
+            ->when($shareCode, function ($query) use ($shareCode) {
+            return $query->where('share_code', $shareCode);
+        })
+            // Si une recherche textuelle est fournie, on cherche dans le nom, la description ou le code
+            ->when($q, function ($query) use ($q) {
+            return $query->where(function ($subQuery) use ($q) {
+                    $subQuery->where('name', 'like', "%{$q}%")
+                        ->orWhere('description', 'like', "%{$q}%")
+                        ->orWhere('share_code', 'like', "%{$q}%");
+                }
+                );
+            })
             ->orderBy('created_at', $orderDate)
             ->orderBy('id', $orderDate)
             ->paginate(8);
@@ -55,8 +59,7 @@ class DashboardController extends Controller
             'currentPage' => $kapsules->currentPage(),
             'searchQuery' => $q ?? '',
             'dateOrder' => $orderDate,
-            'kapsuleWithCode' => $kapsuleWithCode ? $kapsuleWithCode->only(['id', 'name', 'description']) : null,
-            'userOfTheKapsuleWithCode' => $userOfTheKapsuleWithCode ? $userOfTheKapsuleWithCode->only(['id', 'username']) : null,
+            'shareCode' => $shareCode ?? '',
         ]);
     }
 }

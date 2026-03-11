@@ -59,5 +59,6 @@
     "name_required": "Le nom de la Kapsule est requis.",
     "you_joined_kapsule": "Vous avez rejoint la Kapsule :name avec succès !",
     "impossible_join_kapsule": "Impossible de rejoindre la Kapsule.",
-    "already_member_of_kapsule": "Vous êtes déjà membre de la Kapsule."
+    "already_member_of_kapsule": "Vous êtes déjà membre de la Kapsule.",
+    "search_by_code": "Entrer un code de partage"
 }
