@@ -6,6 +6,8 @@ use App\Models\Kapsule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use ZanySoft\Zip\Facades\Zip;
+use Illuminate\Support\Facades\File;
 
 class KapsuleController extends Controller
 {
@@ -162,5 +164,36 @@ class KapsuleController extends Controller
 
         return redirect()->route('kapsule.load', $kapsule)
             ->with('success', 'Kapsule modifiée avec succès.');
+    }
+
+    public function downloadZip(Kapsule $kapsule)
+    {
+        $mediaItems = $kapsule->getMedia('images');
+
+        if ($mediaItems->isEmpty()) {
+            return back()->with('error', __('no_files_to_download', [], 'fr') ?? 'Aucun fichier à télécharger.');
+        }
+
+        $zipFileName = \Illuminate\Support\Str::slug($kapsule->name) . '-' . time() . '.zip';
+        $zipPath = storage_path('app/' . $zipFileName);
+
+        $zip = Zip::create($zipPath, true);
+
+        $filesToAdd = [];
+        foreach ($mediaItems as $media) {
+            $path = $media->getPath();
+            if (File::exists($path)) {
+                $filesToAdd[] = $path;
+            }
+        }
+
+        if (empty($filesToAdd)) {
+            return back()->with('error', __('files_not_found_on_server', [], 'fr') ?? 'Fichiers introuvables sur le serveur.');
+        }
+
+        $zip->add($filesToAdd, true);
+        $zip->close();
+
+        return response()->download($zipPath)->deleteFileAfterSend(true);
     }
 }

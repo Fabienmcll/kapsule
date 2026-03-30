@@ -86,5 +86,9 @@
     "save_changes": "Enregistrer les modifications",
     "kapsule_updated": "Kapsule mise à jour avec succès.",
     "name_placeholder": "Nom de la Kapsule",
-    "description_placeholder": "Description de la Kapsule (optionnel)"
+    "description_placeholder": "Description de la Kapsule (optionnel)",
+    "no_files_to_download": "Le dossier ne contient aucun fichier.",
+    "files_not_found_on_server": "Fichiers introuvables sur le serveur.",
+    "download_zip": "Télécharger le ZIP",
+    "download_zip_confirm": "Êtes-vous sûr de vouloir télécharger le ZIP ?"
 }

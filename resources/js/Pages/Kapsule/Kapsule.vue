@@ -52,6 +52,14 @@
                     </div>
 
                     <div class="flex flex-wrap gap-3">
+                        <a
+                            v-if="(amIOwner || (amIMember && amIAccepted)) && media.length > 0"
+                            :href="route('kapsules.downloadZip', kapsule.id)"
+                            class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-medium transition-all shadow-md shadow-blue-500/20 group"
+                        >
+                            <ArrowDownTrayIcon class="h-5 w-5" />
+                            {{ $t('download_zip') }}
+                        </a>
                         <button
                             v-if="amIOwner"
                             @click="showParametersModal = true"
@@ -340,6 +348,8 @@ import {
     CheckIcon,
     XMarkIcon,
     NoSymbolIcon,
+    ClipboardDocumentIcon,
+    ArrowDownTrayIcon
     ClipboardDocumentIcon,
     PlayIcon,
     ArrowDownTrayIcon,
