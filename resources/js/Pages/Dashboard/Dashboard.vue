@@ -2,7 +2,9 @@
     <Head title="Dashboard" />
 
     <AuthenticatedLayout>
-         <h2 class="text-2xl mt-4 uppercase underline decoration-blue-600 decoration-2 ml-6 text-white font-bold">
+        <h2
+            class="text-2xl mt-4 uppercase underline decoration-blue-600 decoration-2 ml-6 text-white font-bold"
+        >
             {{ $t("your_kapsules") }}
         </h2>
 
@@ -10,7 +12,11 @@
             <!-- Barre de recherche et Date (Gauche) -->
             <div class="flex gap-6 items-center flex-1">
                 <div class="flex items-center gap-2 flex-1 max-w-md">
-                    <label for="search" class="text-white font-bold whitespace-nowrap">{{ $t("search") }} :</label>
+                    <label
+                        for="search"
+                        class="text-white font-bold whitespace-nowrap"
+                        >{{ $t("search") }} :</label
+                    >
                     <input
                         id="search"
                         type="text"
@@ -31,7 +37,11 @@
                 </div>
 
                 <div class="flex items-center gap-2">
-                    <label for="order" class="text-white font-bold whitespace-nowrap">{{ $t("sort_by") }} :</label>
+                    <label
+                        for="order"
+                        class="text-white font-bold whitespace-nowrap"
+                        >{{ $t("sort_by") }} :</label
+                    >
                     <select
                         id="order"
                         v-model="order"
@@ -84,58 +94,79 @@
         <!-- Kapsules list -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div v-for="kapsule in kapsules" :key="kapsule.id" class="p-6">
-            <Link
-                    :href="route('kapsule.load', kapsule.id)"
-                    class="block h-full">
-                <div
-                    class="border border-gray-700 w-full p-5 rounded-xl dark:bg-gray-800 text-white shadow-sm hover:shadow-md transition-shadow"
+                <component
+                    :is="kapsule.is_pending ? 'div' : Link"
+                    :href="
+                        kapsule.is_pending
+                            ? null
+                            : route('kapsule.load', kapsule.id)
+                    "
+                    class="block h-full"
                 >
-                    <div class="flex items-center gap-4">
-                        <div
-                            class="p-3 rounded-lg bg-blue-600/20 flex items-center justify-center"
-                        >
-                            <FolderIcon class="h-6 w-6 text-blue-400" />
-                        </div>
-                        <h3
-                            class="font-bold text-xl tracking-tight uppercase truncate"
-                        >
-                            {{ kapsule.name }}
-                        </h3>
-                    </div>
-
-                    <div class="mt-5">
-                        <p
-                            class="text-sm text-gray-400 leading-relaxed min-h-[60px] line-clamp-2 italic"
-                        >
-                            {{ kapsule.description || "Aucune description" }}
-                        </p>
-
-                        <hr class="my-5 border-gray-700" />
-
-                        <div class="flex items-center justify-between mt-4">
-                            <span
-                                class="text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                                {{ formatDate(kapsule.created_at) }}
-                            </span>
-
+                    <div
+                        class="border border-gray-700 w-full p-5 rounded-xl dark:bg-gray-800 text-white shadow-sm transition-shadow"
+                        :class="
+                            kapsule.is_pending
+                                ? 'cursor-not-allowed opacity-75'
+                                : 'hover:shadow-lg hover:shadow-blue-500/20 cursor-pointer'
+                        "
+                    >
+                        <div class="flex items-center gap-4">
                             <div
-                                @click.stop.prevent="copyToClipboard(kapsule.share_code)"
-                                class="flex cursor-pointer items-center justify-between gap-3 bg-gray-900/50 border border-gray-600 px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors group"
+                                class="p-3 rounded-lg bg-blue-600/20 flex items-center justify-center"
                             >
-                                <code
-                                    class="font-mono text-sm font-bold text-blue-400"
-                                    >{{ kapsule.share_code }}</code
-                                >
-                                <ClipboardDocumentIcon
-                                    class="h-4 w-4 text-gray-500 group-hover:text-white"
-                                />
+                                <FolderIcon class="h-6 w-6 text-blue-400" />
                             </div>
+                            <h3
+                                class="font-bold text-xl tracking-tight uppercase truncate"
+                            >
+                                {{ kapsule.name }}
+                            </h3>
+                        </div>
+
+                        <div class="mt-5">
+                            <p
+                                class="text-sm text-gray-400 leading-relaxed min-h-[60px] line-clamp-2 italic"
+                            >
+                                {{
+                                    kapsule.description || "Aucune description"
+                                }}
+                            </p>
+
+                            <hr class="my-5 border-gray-700" />
+
+                            <div class="flex items-center justify-between mt-4">
+                                <span
+                                    class="text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    {{ formatDate(kapsule.created_at) }}
+                                </span>
+
+                                <div
+                                    @click.stop.prevent="
+                                        copyToClipboard(kapsule.share_code)
+                                    "
+                                    class="flex cursor-pointer items-center justify-between gap-3 bg-gray-900/50 border border-gray-600 px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors group"
+                                >
+                                    <code
+                                        class="font-mono text-sm font-bold text-blue-400"
+                                        >{{ kapsule.share_code }}</code
+                                    >
+                                    <ClipboardDocumentIcon
+                                        class="h-4 w-4 text-gray-500 group-hover:text-white"
+                                    />
+                                </div>
+                            </div>
+                            <p>
+                                {{
+                                    kapsule.is_pending
+                                        ? $t("demande_adhesion")
+                                        : ""
+                                }}
+                            </p>
                         </div>
                     </div>
-                </div>
-
-            </Link>
+                </component>
             </div>
         </div>
         <div>
@@ -180,7 +211,7 @@ import {
     PlusIcon,
     FolderIcon,
     ClipboardDocumentIcon,
-    UserGroupIcon
+    UserGroupIcon,
 } from "@heroicons/vue/24/solid";
 import CreateKapsuleModal from "./Partials/CreateKapsuleModal.vue";
 import JoinKapsuleModal from "./Partials/JoinKapsuleModal.vue";
@@ -201,6 +232,7 @@ const props = defineProps({
     totalKapsules: Number,
     currentPage: Number,
     dateOrder: String,
+    allKapsulesWithIsPending: Array,
 });
 
 const totalKapsules = ref(props.totalKapsules);
@@ -267,7 +299,12 @@ const changeDateOrder = (order) => {
     dateOrder.value = order;
     router.get(
         route("dashboard"),
-        { q: searchQuery.value, shareCode: searchCode.value, dateOrder: order, page: currentPage.value },
+        {
+            q: searchQuery.value,
+            shareCode: searchCode.value,
+            dateOrder: order,
+            page: currentPage.value,
+        },
         {
             preserveState: true,
             replace: true,
