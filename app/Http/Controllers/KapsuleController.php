@@ -160,7 +160,7 @@ class KapsuleController extends Controller
         $kapsule->update($validated);
 
         return redirect()->route('kapsule.load', $kapsule)
-            ->with('success', 'Kapsule modifiée avec succès.');
+            ->with('success', 'kapsule_modified');
     }
 
     public function downloadZip(Kapsule $kapsule)

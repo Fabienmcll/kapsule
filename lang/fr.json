@@ -96,5 +96,16 @@
     "leave_kapsule": "Quitter la Kapsule",
     "leave_kapsule_confirm": "Êtes-vous sûr de vouloir quitter la Kapsule ?",
     "leave": "Quitter",
-    "you_left_kapsule": "Vous avez quitté la Kapsule avec succès."
+    "you_left_kapsule": "Vous avez quitté la Kapsule avec succès.",
+    "owner_cannot_leave_kapsule": "Le propriétaire ne peut pas quitter la Kapsule. Veuillez supprimer la Kapsule.",
+    "kapsule_modified": "Kapsule modifiée avec succès.",
+    "member_banned_successfully": "Membre banni avec succès.",
+    "member_unbanned_successfully": "Membre débanni avec succès.",
+    "membership_request_rejected": "Demande d'adhésion rejetée avec succès.",
+    "membership_request_accepted": "Demande d'adhésion acceptée avec succès.",
+    "you_are_not_the_owner_of_this_kapsule": "Vous n'êtes pas le propriétaire de cette Kapsule.",
+    "user_unbanned_successfully": "Utilisateur débanni avec succès.",
+    "user_not_banned_in_kapsule": "Cet utilisateur n'est pas banni de la Kapsule.",
+    "access_denied_to_kapsule": "Accès refusé à cette Kapsule.",
+    "your_membership_request_is_pending": "Votre demande d'adhésion est en attente de validation par le propriétaire."
 }
