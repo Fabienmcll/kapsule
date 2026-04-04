@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Kapsule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Inertia\Inertia;
 use ZanySoft\Zip\Facades\Zip;
-use Illuminate\Support\Facades\File;
 
 class KapsuleController extends Controller
 {
@@ -28,7 +28,7 @@ class KapsuleController extends Controller
 
     public function join(Request $request, Kapsule $kapsule)
     {
-        if ($kapsule && !$kapsule->members()->where('user_id', Auth::id())->exists() && $kapsule->user_id !== Auth::id() && !$kapsule->members()->where('user_id', Auth::id())->wherePivot('is_banned', true)->exists()) {
+        if ($kapsule && ! $kapsule->members()->where('user_id', Auth::id())->exists() && $kapsule->user_id !== Auth::id() && ! $kapsule->members()->where('user_id', Auth::id())->wherePivot('is_banned', true)->exists()) {
             // Logique pour ajouter l'utilisateur à la kapsule
             // Par exemple, créer une relation entre l'utilisateur et la kapsule
 
@@ -36,14 +36,11 @@ class KapsuleController extends Controller
             Auth::user()->joinedKapsules()->attach($kapsule->id);
 
             return back()->with('success', __('you_joined_kapsule', ['kapsulename' => $kapsule->name]));
-        }
-        elseif (!$kapsule) {
+        } elseif (! $kapsule) {
             return back()->with('error', __('kapsule_not_found'));
-        }
-        elseif ($kapsule->members()->where('user_id', Auth::id())->wherePivot('is_banned', true)->exists()) {
+        } elseif ($kapsule->members()->where('user_id', Auth::id())->wherePivot('is_banned', true)->exists()) {
             return back()->with('error', __('you_are_banned_from_this_kapsule'));
-        }
-        else {
+        } else {
             return back()->with('error', __('already_member_of_kapsule'));
         }
     }
@@ -55,23 +52,23 @@ class KapsuleController extends Controller
 
         $allMembers = $kapsule->members()
             ->get()
-            ->map(fn($member) => [
-        'id' => $member->id,
-        'username' => $member->username,
-        'accepted' => $member->pivot->accepted,
-        'is_pending' => $member->pivot->is_pending,
-        ]);
+            ->map(fn ($member) => [
+                'id' => $member->id,
+                'username' => $member->username,
+                'accepted' => $member->pivot->accepted,
+                'is_pending' => $member->pivot->is_pending,
+            ]);
 
         // On récupère uniquement les membres acceptés ou en attente, et on réindexe la collection
-        $members = $allMembers->where(fn($member) => $member['accepted'] || $member['is_pending'])->values();
+        $members = $allMembers->where(fn ($member) => $member['accepted'] || $member['is_pending'])->values();
 
         $bannedUsers = $kapsule->members()
             ->wherePivot('is_banned', true)
             ->get()
-            ->map(fn($user) => [
-        'id' => $user->id,
-        'username' => $user->username,
-        ]);
+            ->map(fn ($user) => [
+                'id' => $user->id,
+                'username' => $user->username,
+            ]);
 
         return Inertia::render('Kapsule/Kapsule', [
             'kapsule' => $kapsule->only(['id', 'name', 'description', 'share_code']),
@@ -81,7 +78,7 @@ class KapsuleController extends Controller
             'members' => $members,
             'bannedUsers' => $bannedUsers,
             'media' => $kapsule->getMedia('images')->map(function ($item) {
-            return [
+                return [
                     'id' => $item->id,
                     'url' => $item->getUrl(),
                     'thumb' => $item->hasGeneratedConversion('preview') ? $item->getUrl('preview') : $item->getUrl(),
@@ -89,7 +86,7 @@ class KapsuleController extends Controller
                     'mime_type' => $item->mime_type,
                     'size' => $item->human_readable_size,
                 ];
-        }),
+            }),
 
         ]);
     }
@@ -174,8 +171,8 @@ class KapsuleController extends Controller
             return back()->with('error', __('no_files_to_download', [], 'fr') ?? 'Aucun fichier à télécharger.');
         }
 
-        $zipFileName = \Illuminate\Support\Str::slug($kapsule->name) . '-' . time() . '.zip';
-        $zipPath = storage_path('app/' . $zipFileName);
+        $zipFileName = \Illuminate\Support\Str::slug($kapsule->name).'-'.time().'.zip';
+        $zipPath = storage_path('app/'.$zipFileName);
 
         $zip = Zip::create($zipPath, true);
 
@@ -195,5 +192,23 @@ class KapsuleController extends Controller
         $zip->close();
 
         return response()->download($zipPath)->deleteFileAfterSend(true);
+    }
+
+    public function leave(Request $request, Kapsule $kapsule)
+    {
+        // Vérifier que l'utilisateur est membre de la kapsule
+        if (! $kapsule->members()->where('user_id', Auth::id())->exists()) {
+            return back()->with('error', __('not_a_member_of_kapsule'));
+        }
+
+        // Vérifier que l'utilisateur n'est pas le propriétaire de la kapsule
+        if ($kapsule->user_id === Auth::id()) {
+            return back()->with('error', __('owner_cannot_leave_kapsule'));
+        }
+
+        // Supprimer la relation entre l'utilisateur et la kapsule
+        Auth::user()->joinedKapsules()->detach($kapsule->id);
+
+        return redirect()->route('dashboard')->with('success', __('you_left_kapsule', ['kapsulename' => $kapsule->name]));
     }
 }

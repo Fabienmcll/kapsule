@@ -92,5 +92,9 @@
     "download_zip": "Télécharger le ZIP",
     "download_zip_confirm": "Êtes-vous sûr de vouloir télécharger le ZIP ?",
     "demande_adhesion": "Demande en attente...",
-    "you_are_banned_from_this_kapsule": "Vous êtes banni de cette Kapsule."
+    "you_are_banned_from_this_kapsule": "Vous êtes banni de cette Kapsule.",
+    "leave_kapsule": "Quitter la Kapsule",
+    "leave_kapsule_confirm": "Êtes-vous sûr de vouloir quitter la Kapsule ?",
+    "leave": "Quitter",
+    "you_left_kapsule": "Vous avez quitté la Kapsule avec succès."
 }

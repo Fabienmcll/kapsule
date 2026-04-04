@@ -71,6 +71,13 @@
                             <Cog6ToothIcon class="h-5 w-5 text-blue-400" />
                             {{ $t("parameters") }}
                         </button>
+                        <button
+                            v-if="amIMember && !amIOwner"
+                            @click="leaveKapsule"
+                            class="flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-medium transition-all shadow-md shadow-red-500/20 group"
+                        >
+                            {{ $t("leave_kapsule") }}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -330,12 +337,21 @@
             @close="showParametersModal = false"
             @unbanned="handleMemberUnbanned"
         />
+        <AreYouSureModal
+            v-if="showLeaveModal"
+            :show="showLeaveModal"
+            :text="$t('leave_kapsule_confirm')"
+            :actionText="$t('leave')"
+            :isRedButton="true"
+            @close="showLeaveModal = false"
+            @accepted="leaveKapsuleConfirmed"
+        />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import { onMounted, onUnmounted, ref, watch, computed } from "vue";
-import { Head, Link, usePage } from "@inertiajs/vue3";
+import { Head, Link, router, usePage } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import FileUpload from "@/Components/FileUpload.vue";
 import AcceptKapsuleModal from "./Partials/AcceptKapsuleModal.vue";
@@ -358,6 +374,7 @@ import {
 
 import GLightbox from "glightbox";
 import "glightbox/dist/css/glightbox.min.css";
+import AreYouSureModal from "./Partials/AreYouSureModal.vue";
 
 onMounted(() => {
     const lightbox = GLightbox({
@@ -420,6 +437,7 @@ watch(
 );
 
 const showAcceptModal = ref(false);
+const showLeaveModal = ref(false);
 const showRejectModal = ref(false);
 const showBanModal = ref(false);
 const showParametersModal = ref(false);
@@ -445,6 +463,30 @@ const handleMemberBanned = (memberId) => {
     showBanModal.value = false;
 };
 
+const leaveKapsule = () => {
+    showLeaveModal.value = true;
+};
+
+const leaveKapsuleConfirmed = () => {
+    router.post(
+        `/kapsules/${props.kapsule.id}/leave`,
+        {},
+        {
+            onSuccess: (page) => {
+                const flash = page.props.flash;
+                if (flash.success) {
+                    toast.success(flash.success);
+                    emit("close");
+                } else if (flash.error) {
+                    toast.error(flash.error);
+                }
+            },
+            onError: () => {
+                toast.error(trans("an_error_occurred"));
+            },
+        },
+    );
+};
 const handleMemberUnbanned = (userId) => {
     bannedUsers.value = bannedUsers.value.filter((u) => u.id !== userId);
 };
