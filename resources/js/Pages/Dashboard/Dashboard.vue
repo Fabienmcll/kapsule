@@ -8,10 +8,10 @@
             {{ $t("your_kapsules") }}
         </h2>
 
-        <div class="flex justify-between items-end p-6 gap-4">
+        <div class="flex flex-col xl:flex-row justify-between items-start xl:items-end p-6 gap-6">
             <!-- Barre de recherche et Date (Gauche) -->
-            <div class="flex gap-6 items-center flex-1">
-                <div class="flex items-center gap-2 flex-1 max-w-md">
+            <div class="flex flex-col lg:flex-row gap-4 lg:gap-6 items-start lg:items-center flex-1 w-full">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 flex-1 w-full lg:max-w-md">
                     <label
                         for="search"
                         class="text-white font-bold whitespace-nowrap"
@@ -26,7 +26,7 @@
                     />
                 </div>
 
-                <div class="relative flex-1 max-w-md">
+                <div class="relative flex-1 w-full lg:max-w-md">
                     <input
                         id="searchCode"
                         type="text"
@@ -36,7 +36,7 @@
                     />
                 </div>
 
-                <div class="flex items-center gap-2">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full lg:w-auto">
                     <label
                         for="order"
                         class="text-white font-bold whitespace-nowrap"
@@ -46,7 +46,7 @@
                         id="order"
                         v-model="order"
                         @change="changeDateOrder(order)"
-                        class="bg-blue-900 border-gray-700 text-white rounded-md shadow-sm px-4 py-2"
+                        class="bg-blue-900 border-gray-700 text-white w-full sm:w-auto rounded-md shadow-sm px-4 py-2"
                     >
                         <option value="asc">{{ $t("date_asc") }}</option>
                         <option value="desc">{{ $t("date_desc") }}</option>
@@ -55,17 +55,17 @@
             </div>
 
             <!-- Boutons d'action (Droite) -->
-            <div class="flex flex-col w-68">
+            <div class="flex flex-col sm:flex-row xl:flex-col w-full xl:w-64 gap-4 mt-2 xl:mt-0">
                 <button
                     @click="showJoinModal = true"
-                    class="px-4 flex items-center gap-2 hover:bg-blue-700 hover:cursor-pointer py-2 bg-blue-600 text-white rounded"
+                    class="px-4 flex items-center justify-center gap-2 hover:bg-blue-700 py-2 bg-blue-600 text-white rounded w-full shadow-sm transition"
                 >
                     <UserGroupIcon class="h-5 w-5" />
                     {{ $t("join_kapsule") }}
                 </button>
                 <button
                     @click="showModal = true"
-                    class="px-4 mt-4 flex items-center gap-2 hover:bg-green-700 hover:cursor-pointer py-2 bg-green-600 text-white rounded"
+                    class="px-4 flex items-center justify-center gap-2 hover:bg-green-700 py-2 bg-green-600 text-white rounded w-full shadow-sm transition"
                 >
                     <PlusIcon class="h-5 w-5" />
                     {{ $t("create_kapsule") }}

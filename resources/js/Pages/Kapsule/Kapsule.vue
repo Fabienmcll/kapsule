@@ -24,7 +24,7 @@
                             {{ kapsule.name }}
                         </h1>
 
-                        <div class="mt-2 flex items-center gap-4">
+                        <div class="mt-2 flex flex-col sm:flex-row sm:items-center items-start gap-4">
                             <p
                                 class="text-lg text-gray-400 max-w-2xl leading-relaxed"
                             >

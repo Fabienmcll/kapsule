@@ -58,11 +58,24 @@
                             class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder:text-gray-600 resize-none"
                         ></textarea>
                     </div>
-                    <div class="flex justify-end">
+                    <div class="flex flex-col-reverse sm:flex-row justify-between items-stretch sm:items-center gap-4 mt-6">
+                        <button
+                            type="button"
+                            @click="promptDelete"
+                            class="flex justify-center items-center gap-2 px-6 py-2.5 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white disabled:opacity-50 rounded-xl font-bold transition-all border border-red-600/20"
+                        >
+                            <NoSymbolIcon v-if="!form.processing" class="h-4 w-4" />
+                            <div
+                                v-else
+                                class="h-4 w-4 border-2 border-red-500/30 border-t-red-500 rounded-full animate-spin"
+                            ></div>
+                            {{ $t("delete_kapsule") }}
+                        </button>
+
                         <button
                             type="submit"
                             :disabled="form.processing"
-                            class="flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:opacity-50 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-900/20"
+                            class="flex justify-center items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:opacity-50 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-900/20"
                         >
                             <CheckIcon
                                 v-if="!form.processing"
@@ -75,18 +88,6 @@
                             {{ $t("save_changes") }}
                         </button>
                     </div>
-                    <button
-                        type="button"
-                        @click="promptDelete"
-                        class="flex items-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:opacity-50 text-white rounded-xl font-bold transition-all shadow-lg shadow-red-900/20"
-                    >
-                        <NoSymbolIcon v-if="!form.processing" class="h-4 w-4" />
-                        <div
-                            v-else
-                            class="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
-                        ></div>
-                        {{ $t("delete_kapsule") }}
-                    </button>
                 </form>
             </section>
 
