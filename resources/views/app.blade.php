@@ -10,8 +10,7 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600|outfit:400,500,600,700&display=swap"
-        rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.bunny.net/css?family=figtree:400,500,600%7Coutfit:400,500,600,700&display=swap" integrity="sha384-sSmZjwp6a2aVWzQpqQlkWhVQDPEkwY1BUvajjp/Dj3bYSMnasgBs0NaW+V/f3sOu" crossorigin="anonymous">
 
     <!-- Scripts -->
     @routes
