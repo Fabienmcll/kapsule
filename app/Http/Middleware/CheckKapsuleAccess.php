@@ -22,8 +22,8 @@ class CheckKapsuleAccess
             abort(403, __('you_are_banned_from_this_kapsule'));
         }
 
-        if (!$kapsule->members()->where('user_id', $user->id)->exists() && $kapsule->user_id !== $user->id) {
-            abort(403, __('access_denied_to_kapsule'));
+        if (! $kapsule->members()->where('user_id', $user->id)->exists() && $kapsule->user_id !== $user->id) {
+            abort(404, __('kapsule_not_found'));
         }
 
         if ($kapsule->members()->where('user_id', $user->id)->wherePivot('accepted', false)->exists()) {

@@ -107,5 +107,8 @@
     "user_unbanned_successfully": "Utilisateur débanni avec succès.",
     "user_not_banned_in_kapsule": "Cet utilisateur n'est pas banni de la Kapsule.",
     "access_denied_to_kapsule": "Accès refusé à cette Kapsule.",
-    "your_membership_request_is_pending": "Votre demande d'adhésion est en attente de validation par le propriétaire."
+    "your_membership_request_is_pending": "Votre demande d'adhésion est en attente de validation par le propriétaire.",
+    "delete_kapsule": "Supprimer la Kapsule",
+    "confirm_delete_kapsule": "Êtes-vous sûr de vouloir supprimer cette Kapsule ? Cette action est irréversible.",
+    "kapsule_deleted": "Kapsule supprimée avec succès."
 }

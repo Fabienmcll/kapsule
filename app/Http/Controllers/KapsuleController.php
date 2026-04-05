@@ -211,4 +211,12 @@ class KapsuleController extends Controller
 
         return redirect()->route('dashboard')->with('success', __('you_left_kapsule', ['kapsulename' => $kapsule->name]));
     }
+
+    // Suppression de la kapsule et de tous les médias
+    public function destroy(Kapsule $kapsule)
+    {
+        $kapsule->delete();
+
+        return redirect()->route('dashboard')->with('success', __('kapsule_deleted'));
+    }
 }
