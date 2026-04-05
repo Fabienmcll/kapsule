@@ -43,6 +43,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/kapsules/{kapsule}/modify', [KapsuleController::class, 'modify'])->name('kapsules.modify');
         Route::get('/kapsules/{kapsule}/download', [KapsuleController::class, 'downloadZip'])->name('kapsules.downloadZip');
         Route::delete('/kapsules/{kapsule}', [KapsuleController::class, 'destroy'])->name('kapsules.destroy');
+    });
+    Route::middleware('App\Http\Middleware\CheckIfMediaIsFromOwnerOrImporter')->group(function () {
+        Route::delete('/media/{media}', [MediaController::class, 'destroy'])->name('media.destroy');
     }
     );
 });

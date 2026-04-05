@@ -85,6 +85,7 @@ class KapsuleController extends Controller
                     'file_name' => $item->file_name,
                     'mime_type' => $item->mime_type,
                     'size' => $item->human_readable_size,
+                    'user_id' => $item->user_id,
                 ];
             }),
 

@@ -110,5 +110,8 @@
     "your_membership_request_is_pending": "Votre demande d'adhésion est en attente de validation par le propriétaire.",
     "delete_kapsule": "Supprimer la Kapsule",
     "confirm_delete_kapsule": "Êtes-vous sûr de vouloir supprimer cette Kapsule ? Cette action est irréversible.",
-    "kapsule_deleted": "Kapsule supprimée avec succès."
+    "kapsule_deleted": "Kapsule supprimée avec succès.",
+    "media_delete_failed": "Échec de la suppression du média. Veuillez réessayer.",
+    "media_deleted": "Média supprimé avec succès.",
+    "delete_media_confirm": "Êtes-vous sûr de vouloir supprimer ce média ? Cette action est irréversible."
 }

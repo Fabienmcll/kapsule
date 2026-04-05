@@ -233,7 +233,10 @@
                         <div
                             class="bg-gray-900/80 rounded-2xl p-6 border border-gray-800"
                         >
-                            <FileUpload :kapsule-id="kapsule.id" @upload-success="handleUploadSuccess" />
+                            <FileUpload
+                                :kapsule-id="kapsule.id"
+                                @upload-success="handleUploadSuccess"
+                            />
                         </div>
 
                         <div
@@ -252,6 +255,17 @@
                                 >
                                     <ArrowDownTrayIcon class="h-4 w-4" />
                                 </a>
+                                <TrashIcon
+                                    v-if="
+                                        amIOwner ||
+                                        item.user_id === page.props.auth.user.id
+                                    "
+                                    @click="
+                                        showDeleteConfirm = true;
+                                        mediaToDelete = item;
+                                    "
+                                    class="h-8 w-8 absolute top-2 left-2 z-10 bg-black/60 hover:bg-black text-white p-2 rounded-lg cursor-pointer"
+                                />
 
                                 <a
                                     :href="item.url"
@@ -346,6 +360,31 @@
             @close="showLeaveModal = false"
             @accepted="leaveKapsuleConfirmed"
         />
+        <AreYouSureModal
+            v-if="showDeleteConfirm"
+            :show="showDeleteConfirm"
+            :text="$t('delete_media_confirm')"
+            :actionText="$t('delete')"
+            :isRedButton="true"
+            @close="showDeleteConfirm = false"
+            @accepted="
+                router.delete(
+                    route('media.destroy', mediaToDelete.id, kapsule.id),
+                    {
+                        onSuccess: () => {
+                            toast.success($t('media_deleted'));
+                            media = media.filter(
+                                (m) => m.id !== mediaToDelete.id,
+                            );
+                            showDeleteConfirm = false;
+                        },
+                        onError: () => {
+                            toast.error($t('an_error_occurred'));
+                        },
+                    },
+                )
+            "
+        />
     </AuthenticatedLayout>
 </template>
 
@@ -370,6 +409,7 @@ import {
     ClipboardDocumentIcon,
     ArrowDownTrayIcon,
     PlayIcon,
+    TrashIcon,
 } from "@heroicons/vue/24/solid";
 
 import GLightbox from "glightbox";
@@ -377,6 +417,9 @@ import "glightbox/dist/css/glightbox.min.css";
 import AreYouSureModal from "./Partials/AreYouSureModal.vue";
 
 let lightbox = null;
+
+const mediaToDelete = ref(null);
+const showDeleteConfirm = ref(false);
 
 const initLightbox = () => {
     if (lightbox) {
@@ -396,12 +439,12 @@ onMounted(() => {
 
 const handleUploadSuccess = () => {
     router.reload({
-        only: ['media'],
+        only: ["media"],
         onSuccess: () => {
             nextTick(() => {
                 initLightbox();
             });
-        }
+        },
     });
 };
 
