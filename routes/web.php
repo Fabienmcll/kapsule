@@ -22,7 +22,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::post('/kapsules', [KapsuleController::class, 'store'])->name('kapsules.store');
-
+// Middleware pour vérifier que l'utilisateur a accès à la kapsule pour les routes suivantes
 Route::middleware('auth')->group(function () {
     Route::middleware('App\Http\Middleware\CheckKapsuleAccess')->group(function () {
         Route::get('/kapsule/{kapsule}', [KapsuleController::class, 'load'])
@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/media/upload', [MediaController::class, 'store'])->name('media.upload');
     Route::post('/kapsules/{kapsule}/join', [KapsuleController::class, 'join'])->name('kapsules.join');
     Route::post('/kapsules/{kapsule}/leave', [KapsuleController::class, 'leave'])->name('kapsules.leave');
+    // Middleware pour vérifier que l'utilisateur est le propriétaire de la kapsule pour les routes suivantes
     Route::middleware('App\Http\Middleware\CheckIfOwnerKapsule')->group(function () {
         Route::post('/kapsules/{kapsule}/ban/{member}', [KapsuleController::class, 'ban'])->name('kapsules.ban');
         Route::get('/kapsules/{kapsule}/banned-users', [UsersBannedKapsuleController::class, 'index'])->name('kapsules.banned-users');
@@ -41,6 +42,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/kapsules/{kapsule}/edit', [KapsuleController::class, 'edit'])->name('kapsules.edit');
         Route::post('/kapsules/{kapsule}/modify', [KapsuleController::class, 'modify'])->name('kapsules.modify');
         Route::get('/kapsules/{kapsule}/download', [KapsuleController::class, 'downloadZip'])->name('kapsules.downloadZip');
+        Route::delete('/kapsules/{kapsule}', [KapsuleController::class, 'destroy'])->name('kapsules.destroy');
     }
     );
 });
