@@ -233,7 +233,7 @@
                         <div
                             class="bg-gray-900/80 rounded-2xl p-6 border border-gray-800"
                         >
-                            <FileUpload :kapsule-id="kapsule.id" />
+                            <FileUpload :kapsule-id="kapsule.id" @upload-success="handleUploadSuccess" />
                         </div>
 
                         <div
@@ -350,7 +350,7 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref, watch, computed } from "vue";
+import { onMounted, onUnmounted, ref, watch, computed, nextTick } from "vue";
 import { Head, Link, router, usePage } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import FileUpload from "@/Components/FileUpload.vue";
@@ -376,14 +376,34 @@ import GLightbox from "glightbox";
 import "glightbox/dist/css/glightbox.min.css";
 import AreYouSureModal from "./Partials/AreYouSureModal.vue";
 
-onMounted(() => {
-    const lightbox = GLightbox({
-        selector: ".glightbox", // On cible cette classe
+let lightbox = null;
+
+const initLightbox = () => {
+    if (lightbox) {
+        lightbox.destroy();
+    }
+    lightbox = GLightbox({
+        selector: ".glightbox",
         touchNavigation: true,
         loop: true,
         autoplayVideos: true,
     });
+};
+
+onMounted(() => {
+    initLightbox();
 });
+
+const handleUploadSuccess = () => {
+    router.reload({
+        only: ['media'],
+        onSuccess: () => {
+            nextTick(() => {
+                initLightbox();
+            });
+        }
+    });
+};
 
 const props = defineProps({
     kapsule: Object,

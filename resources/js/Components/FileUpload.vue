@@ -45,12 +45,14 @@ const props = defineProps({
     }
 });
 
+const emit = defineEmits(['upload-success']);
 
 const onProcessFile = (error, file) => {
     if (!error) {
         // On attend 2 secondes Puis on retire le fichier de la liste FilePond
         setTimeout(() => {
             pond.value.removeFile(file.id);
+            emit('upload-success');
         }, 2000);
     }
 };
