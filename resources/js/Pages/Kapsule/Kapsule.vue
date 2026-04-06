@@ -42,7 +42,7 @@
                                 >
                                 <button
                                     @click="copyToClipboard(kapsule.share_code)"
-                                    class="text-gray-500 hover:text-blue-400 transition-colors"
+                                    class="text-gray-600 dark:text-gray-400 hover:text-blue-400 transition-colors"
                                     :title="$t('copy_code')"
                                 >
                                     <ClipboardDocumentIcon class="h-4 w-4" />
@@ -88,12 +88,12 @@
                         class="bg-gray-900/80 rounded-2xl p-6 border border-gray-800"
                     >
                         <div class="flex items-center justify-between mb-6">
-                            <h3
+                            <h2
                                 class="text-lg font-bold text-white flex items-center gap-2"
                             >
                                 <UsersIcon class="h-5 w-5 text-blue-400" />
                                 {{ $t("members") }}
-                            </h3>
+                            </h2>
                             <span
                                 class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded-lg text-xs font-bold border border-blue-500/30"
                             >
@@ -210,11 +210,11 @@
                                 class="h-6 w-6 text-yellow-500 flex-shrink-0"
                             />
                             <div>
-                                <h4
+                                <h2
                                     class="text-sm font-bold text-yellow-500 uppercase tracking-wider"
                                 >
                                     {{ $t("access_pending") }}
-                                </h4>
+                                </h2>
                                 <p
                                     class="mt-1 text-sm text-yellow-600/80 leading-relaxed font-medium"
                                 >

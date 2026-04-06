@@ -65,7 +65,7 @@
                 </button>
                 <button
                     @click="showModal = true"
-                    class="px-4 flex items-center justify-center gap-2 hover:bg-green-700 py-2 bg-green-600 text-white rounded w-full shadow-sm transition"
+                    class="px-4 flex items-center justify-center gap-2 hover:bg-green-700 py-2 bg-green-800 text-white rounded w-full shadow-sm transition"
                 >
                     <PlusIcon class="h-5 w-5" />
                     {{ $t("create_kapsule") }}
@@ -137,7 +137,7 @@
 
                             <div class="flex items-center justify-between mt-4">
                                 <span
-                                    class="text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider"
                                 >
                                     {{ formatDate(kapsule.created_at) }}
                                 </span>
@@ -153,7 +153,7 @@
                                         >{{ kapsule.share_code }}</code
                                     >
                                     <ClipboardDocumentIcon
-                                        class="h-4 w-4 text-gray-500 group-hover:text-white"
+                                        class="h-4 w-4 text-gray-600 dark:text-gray-400 group-hover:text-white"
                                     />
                                 </div>
                             </div>

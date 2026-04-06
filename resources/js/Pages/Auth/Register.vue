@@ -1,7 +1,11 @@
 <template>
     <GuestLayout>
-        <Head title="Register" />
+        <Head>
+            <title>Register</title>
+            <meta name="description" content="Créez votre compte sur Kapsule." />
+        </Head>
 
+        <main>
         <form @submit.prevent="submit">
             <div>
                 <InputLabel for="username" value="Nom d'utilisateur" />
@@ -73,7 +77,7 @@
             <div class="mt-4 flex items-center justify-end">
                 <Link
                     :href="route('login')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    class="rounded-md text-sm text-gray-400 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                     {{ $t('alreadyRegistered') }}
                 </Link>
@@ -87,6 +91,7 @@
                 </PrimaryButton>
             </div>
         </form>
+        </main>
     </GuestLayout>
 </template>
 <script setup>
@@ -96,8 +101,6 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { trans } from 'laravel-vue-i18n';
-
 
 const form = useForm({
     username: '',
