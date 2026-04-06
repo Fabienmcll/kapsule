@@ -3,7 +3,10 @@ FROM php:8.3-fpm-alpine AS php_builder
 RUN apk add --no-cache \
     libzip-dev \
     libpng-dev \
-    zlib-dev
+    zlib-dev \
+    autoconf \
+    g++ \
+    make
 
 RUN docker-php-ext-install pdo_mysql exif zip
 
@@ -23,7 +26,14 @@ RUN npm install
 RUN npm run build
 
 FROM php:8.3-fpm-alpine
-RUN apk add --no-cache nginx supervisor libzip libpng
+
+RUN apk add --no-cache \
+    nginx \
+    supervisor \
+    libzip-dev \
+    libpng-dev \
+    zlib-dev
+
 RUN docker-php-ext-install pdo_mysql exif zip
 
 WORKDIR /var/www/html
