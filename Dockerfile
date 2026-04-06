@@ -1,11 +1,20 @@
 FROM php:8.3-fpm-alpine AS php_builder
+
+RUN apk add --no-cache \
+    libzip-dev \
+    libpng-dev \
+    zlib-dev
+
+RUN docker-php-ext-install pdo_mysql exif zip
+
 WORKDIR /app
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-scripts --no-autoloader
-COPY . .
-RUN composer install --no-dev --optimize-autoloader
 
+RUN composer install --no-dev --no-scripts --no-autoloader --ignore-platform-reqs
+
+COPY . .
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
 FROM node:20-alpine AS frontend_builder
 WORKDIR /app
@@ -14,8 +23,8 @@ RUN npm install
 RUN npm run build
 
 FROM php:8.3-fpm-alpine
-RUN apk add --no-cache nginx supervisor
-RUN docker-php-ext-install pdo_mysql
+RUN apk add --no-cache nginx supervisor libzip libpng
+RUN docker-php-ext-install pdo_mysql exif zip
 
 WORKDIR /var/www/html
 COPY --from=php_builder /app /var/www/html
