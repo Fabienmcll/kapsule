@@ -1,27 +1,32 @@
 <template>
     <div class="p-4">
-        <file-pond 
+        <file-pond
             name="media"
             ref="pond"
             label-idle="Glissez vos photos/vidéos ici..."
+            accepted-file-types="image/*,video/*,image/heic,image/heif"
+
             :allow-multiple="true"
-            :allow-directory-upload="true"
+            :allow-directory-upload="false"
+            :item-insert-interval="200"
+            :max-parallel-uploads="1"
             :allow-revert="false"
-    @processfile="onProcessFile"
-            accepted-file-types="image/*,video/*"
+
+            @processfile="onProcessFile"
+
             :server="{
-                process: {
-                    url: route('media.upload'),
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    ondata: (formData) => {
-                        formData.append('kapsule_id', props.kapsuleId);
-                        return formData;
-                    }
-                }
-            }"
+        process: {
+            url: route('media.upload'),
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            ondata: (formData) => {
+                formData.append('kapsule_id', props.kapsuleId);
+                return formData;
+            }
+        }
+    }"
         />
     </div>
 </template>
