@@ -14,39 +14,7 @@
 
             @processfile="onProcessFile"
 
-            :server="{
-        process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
-            const formData = new FormData();
-            formData.append(fieldName, file, file.name);
-            formData.append('kapsule_id', props.kapsuleId);
-
-            const controller = new AbortController();
-
-            axios.post(route('media.upload'), formData, {
-                signal: controller.signal,
-                onUploadProgress: (e) => {
-                    progress(e.lengthComputable, e.loaded, e.total);
-                }
-            }).then(response => {
-                load(response.data);
-            }).catch(thrown => {
-                if (axios.isCancel(thrown)) {
-                    abort();
-                } else if (thrown.response && thrown.response.status === 419) {
-                    window.location.reload();
-                } else {
-                    error(thrown.response?.data?.message || thrown.message);
-                }
-            });
-
-            return {
-                abort: () => {
-                    controller.abort();
-                    abort();
-                }
-            };
-        }
-    }"
+            :server="serverOptions"
         />
     </div>
 </template>
@@ -71,6 +39,43 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['upload-success']);
+
+const serverOptions = {
+    process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
+        const formData = new FormData();
+        formData.append(fieldName, file, file.name);
+        formData.append('kapsule_id', props.kapsuleId);
+
+        const controller = new AbortController();
+
+        axios.post('/media/upload', formData, {
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+            },
+            signal: controller.signal,
+            onUploadProgress: (e) => {
+                progress(e.lengthComputable, e.loaded, e.total);
+            }
+        }).then(response => {
+            load(response.data);
+        }).catch(thrown => {
+            if (axios.isCancel(thrown)) {
+                abort();
+            } else if (thrown.response && thrown.response.status === 419) {
+                window.location.reload();
+            } else {
+                error(thrown.response?.data?.message || thrown.message);
+            }
+        });
+
+        return {
+            abort: () => {
+                controller.abort();
+                abort();
+            }
+        };
+    }
+};
 
 const onProcessFile = (error, file) => {
     if (!error) {
