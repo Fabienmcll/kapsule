@@ -1,7 +1,6 @@
 <template>
     <GuestLayout>
-        <Head>
-            <title>Register</title>
+        <Head title="Register">
             <meta name="description" content="Créez votre compte sur Kapsule." />
         </Head>
 

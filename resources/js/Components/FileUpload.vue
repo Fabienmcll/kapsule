@@ -14,19 +14,7 @@
 
             @processfile="onProcessFile"
 
-            :server="{
-        process: {
-            url: route('media.upload'),
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
-            ondata: (formData) => {
-                formData.append('kapsule_id', props.kapsuleId);
-                return formData;
-            }
-        }
-    }"
+            :server="serverOptions"
         />
     </div>
 </template>
@@ -38,9 +26,9 @@ import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+import axios from "axios";
 
 const FilePond = vueFilePond(FilePondPluginImagePreview, FilePondPluginFileValidateType);
-const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 const pond = ref(null);
 
 const props = defineProps({
@@ -51,6 +39,43 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['upload-success']);
+
+const serverOptions = {
+    process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
+        const formData = new FormData();
+        formData.append(fieldName, file, file.name);
+        formData.append('kapsule_id', props.kapsuleId);
+
+        const controller = new AbortController();
+
+        axios.post('/media/upload', formData, {
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+            },
+            signal: controller.signal,
+            onUploadProgress: (e) => {
+                progress(e.lengthComputable, e.loaded, e.total);
+            }
+        }).then(response => {
+            load(response.data);
+        }).catch(thrown => {
+            if (axios.isCancel(thrown)) {
+                abort();
+            } else if (thrown.response && thrown.response.status === 419) {
+                window.location.reload();
+            } else {
+                error(thrown.response?.data?.message || thrown.message);
+            }
+        });
+
+        return {
+            abort: () => {
+                controller.abort();
+                abort();
+            }
+        };
+    }
+};
 
 const onProcessFile = (error, file) => {
     if (!error) {

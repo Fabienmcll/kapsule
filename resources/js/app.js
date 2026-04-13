@@ -9,10 +9,10 @@ import { i18nVue } from 'laravel-vue-i18n';
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = 'Kapsule';
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => title ? `${title} - ${appName}` : appName,
     resolve: (name) => {
         const pages = import.meta.glob('./Pages/**/*.vue');
         return pages[`./Pages/${name}.vue`]();
