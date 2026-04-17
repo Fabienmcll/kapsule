@@ -238,8 +238,13 @@
                             <FileUpload
                                 :kapsule-id="kapsule.id"
                                 @upload-success="handleUploadSuccess"
+                                @upload-error-too-large="
+                                    toast.error($t('upload_too_large'))
+                                "
+                                @upload-error="toast.error($t('upload_failed'))"
                             />
                         </div>
+                        <p>Maximum file size: {{ maxFileSizeMo }} MB</p>
 
                         <div
                             class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mt-8"
@@ -472,6 +477,9 @@ const props = defineProps({
     },
 });
 
+const maxFileSizeMo = computed(() =>
+    (page.props.limits.max_file_size / 1024).toFixed(0),
+);
 const toast = useToast();
 
 function formatDate(dateString) {

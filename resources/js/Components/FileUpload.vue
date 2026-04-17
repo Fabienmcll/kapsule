@@ -5,15 +5,12 @@
             ref="pond"
             label-idle="Glissez vos photos/vidéos ici..."
             accepted-file-types="image/*,video/*,image/heic,image/heif"
-
             :allow-multiple="true"
             :allow-directory-upload="false"
             :item-insert-interval="200"
             :max-parallel-uploads="1"
             :allow-revert="false"
-
             @processfile="onProcessFile"
-
             :server="serverOptions"
         />
     </div>
@@ -28,53 +25,81 @@ import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import axios from "axios";
 
-const FilePond = vueFilePond(FilePondPluginImagePreview, FilePondPluginFileValidateType);
+const FilePond = vueFilePond(
+    FilePondPluginImagePreview,
+    FilePondPluginFileValidateType,
+);
 const pond = ref(null);
 
 const props = defineProps({
     kapsuleId: {
         type: Number,
-        required: true
-    }
+        required: true,
+    },
 });
 
-const emit = defineEmits(['upload-success']);
+const emit = defineEmits([
+    "upload-success",
+    "upload-error",
+    "upload-error-too-large",
+]);
 
 const serverOptions = {
-    process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
+    process: (
+        fieldName,
+        file,
+        metadata,
+        load,
+        error,
+        progress,
+        abort,
+        transfer,
+        options,
+    ) => {
         const formData = new FormData();
         formData.append(fieldName, file, file.name);
-        formData.append('kapsule_id', props.kapsuleId);
+        formData.append("kapsule_id", props.kapsuleId);
 
         const controller = new AbortController();
 
-        axios.post('/media/upload', formData, {
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-            },
-            signal: controller.signal,
-            onUploadProgress: (e) => {
-                progress(e.lengthComputable, e.loaded, e.total);
-            }
-        }).then(response => {
-            load(response.data);
-        }).catch(thrown => {
-            if (axios.isCancel(thrown)) {
-                abort();
-            } else if (thrown.response && thrown.response.status === 419) {
-                window.location.reload();
-            } else {
-                error(thrown.response?.data?.message || thrown.message);
-            }
-        });
+        axios
+            .post("/media/upload", formData, {
+                headers: {
+                    "X-CSRF-TOKEN": document
+                        .querySelector('meta[name="csrf-token"]')
+                        ?.getAttribute("content"),
+                },
+                signal: controller.signal,
+                onUploadProgress: (e) => {
+                    progress(e.lengthComputable, e.loaded, e.total);
+                },
+            })
+            .then((response) => {
+                load(response.data);
+            })
+            .catch((thrown) => {
+                if (axios.isCancel(thrown)) {
+                    abort();
+                } else if (thrown.response && thrown.response.status === 419) {
+                    window.location.reload();
+                } else if (thrown.response && thrown.response.status === 422) {
+                    error("File is too large or invalid type");
+                } else if (thrown.response && thrown.response.status === 413) {
+                    emit("upload-error-too-large");
+                    error("File is too large");
+                } else {
+                    emit("upload-error");
+                    error("Upload failed");
+                }
+            });
 
         return {
             abort: () => {
                 controller.abort();
                 abort();
-            }
+            },
         };
-    }
+    },
 };
 
 const onProcessFile = (error, file) => {
@@ -82,9 +107,11 @@ const onProcessFile = (error, file) => {
         // On attend 2 secondes Puis on retire le fichier de la liste FilePond
         setTimeout(() => {
             pond.value.removeFile(file.id);
-            emit('upload-success');
+            emit("upload-success");
         }, 2000);
+    } else {
+        console.error("Upload error:", error);
+        pond.value.removeFile(file.id);
     }
 };
-
 </script>

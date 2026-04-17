@@ -36,7 +36,10 @@ class HandleInertiaRequests extends Middleware
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
-                'error'   => fn () => $request->session()->get('error'),
+                'error' => fn () => $request->session()->get('error'),
+            ],
+            'limits' => [
+                'max_file_size' => config('app.max_upload_size', 10240), // Récupère la valeur du .env (via config/app.php)
             ],
         ];
     }
