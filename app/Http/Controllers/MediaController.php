@@ -16,7 +16,7 @@ class MediaController extends Controller
         try {
             // Vérifie que le fichier fait moins de 10Mo et que la Kapsule existe
             $request->validate([
-                'media' => 'required|file|max:10240',
+                'media' => 'required|file|max:102400', // 100MB en kilo-octets
                 'kapsule_id' => 'required|exists:kapsules,id',
             ]);
             // Récupère l'instance de la Kapsule concernée
