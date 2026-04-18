@@ -40,6 +40,7 @@ return [
     */
 
     'debug' => (bool) env('APP_DEBUG', false),
+    'max_upload_size' => env('MAX_UPLOAD_SIZE', 10240), // 10MB en kilo-octets
 
     /*
     |--------------------------------------------------------------------------

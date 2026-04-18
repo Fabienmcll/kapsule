@@ -14,9 +14,9 @@ class MediaController extends Controller
     public function store(Request $request)
     {
         try {
-            // Vérifie que le fichier fait moins de 10Mo et que la Kapsule existe
+            // Vérifie que le fichier fait moins de XXMo et que la Kapsule existe
             $request->validate([
-                'media' => 'required|file|max:10240',
+                'media' => 'required|file|max:'.config('app.max_upload_size'),
                 'kapsule_id' => 'required|exists:kapsules,id',
             ]);
             // Récupère l'instance de la Kapsule concernée

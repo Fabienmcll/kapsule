@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kapsule;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -86,6 +87,7 @@ class KapsuleController extends Controller
                     'mime_type' => $item->mime_type,
                     'size' => $item->human_readable_size,
                     'user_id' => $item->user_id,
+                    'username' => $item->user_id ? User::find($item->user_id)->username : null,
                 ];
             }),
 

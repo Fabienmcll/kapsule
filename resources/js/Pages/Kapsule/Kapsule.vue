@@ -24,7 +24,9 @@
                             {{ kapsule.name }}
                         </h1>
 
-                        <div class="mt-2 flex flex-col sm:flex-row sm:items-center items-start gap-4">
+                        <div
+                            class="mt-2 flex flex-col sm:flex-row sm:items-center items-start gap-4"
+                        >
                             <p
                                 class="text-lg text-gray-400 max-w-2xl leading-relaxed"
                             >
@@ -236,77 +238,91 @@
                             <FileUpload
                                 :kapsule-id="kapsule.id"
                                 @upload-success="handleUploadSuccess"
+                                @upload-error-too-large="
+                                    toast.error($t('upload_too_large'))
+                                "
+                                @upload-error="toast.error($t('upload_failed'))"
                             />
                         </div>
+                        <p>Maximum file size: {{ maxFileSizeMo }} MB</p>
 
                         <div
                             class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mt-8"
                             ref="gridRef"
                         >
-                            <div
-                                v-for="item in media"
-                                :key="item.id"
-                                class="relative rounded-xl overflow-hidden bg-gray-800 border border-gray-700 group hover:border-blue-500/50 transition-all shadow-lg"
-                            >
-                                <a
-                                    :href="item.url"
-                                    download
-                                    class="absolute top-2 right-2 z-10 bg-black/60 hover:bg-black text-white p-2 rounded-lg"
+                            <div v-for="item in media" :key="item.id">
+                                <div
+                                    class="relative rounded-xl overflow-hidden bg-gray-800 border border-gray-700 group hover:border-blue-500/50 transition-all shadow-lg"
                                 >
-                                    <ArrowDownTrayIcon class="h-4 w-4" />
-                                </a>
-                                <TrashIcon
-                                    v-if="
-                                        amIOwner ||
-                                        item.user_id === page.props.auth.user.id
-                                    "
-                                    @click="
-                                        showDeleteConfirm = true;
-                                        mediaToDelete = item;
-                                    "
-                                    class="h-8 w-8 absolute top-2 left-2 z-10 bg-black/60 hover:bg-black text-white p-2 rounded-lg cursor-pointer"
-                                />
-
-                                <a
-                                    :href="item.url"
-                                    class="glightbox block relative"
-                                    :data-type="
-                                        item.mime_type.startsWith('video/')
-                                            ? 'video'
-                                            : 'image'
-                                    "
-                                    data-gallery="kapsule-gallery"
-                                >
-                                    <img
+                                    <a
+                                        :href="item.url"
+                                        download
+                                        class="absolute top-2 right-2 z-10 bg-black/60 hover:bg-black text-white p-2 rounded-lg"
+                                    >
+                                        <ArrowDownTrayIcon class="h-4 w-4" />
+                                    </a>
+                                    <TrashIcon
                                         v-if="
-                                            item.mime_type.startsWith('image/')
+                                            amIOwner ||
+                                            item.user_id ===
+                                                page.props.auth.user.id
                                         "
-                                        :src="item.thumb || item.url"
-                                        class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+                                        @click="
+                                            showDeleteConfirm = true;
+                                            mediaToDelete = item;
+                                        "
+                                        class="h-8 w-8 absolute top-2 left-2 z-10 bg-black/60 hover:bg-black text-white p-2 rounded-lg cursor-pointer"
                                     />
 
-                                    <div v-else class="relative h-48">
-                                        <video
-                                            class="w-full h-48 object-cover pointer-events-none"
-                                        >
-                                            <source
-                                                :src="item.url"
-                                                :type="item.mime_type"
-                                            />
-                                        </video>
-                                        <div
-                                            class="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors"
-                                        >
-                                            <div
-                                                class="p-3 rounded-full bg-white/20 backdrop-blur-sm border border-white/30"
+                                    <a
+                                        :href="item.url"
+                                        class="glightbox block relative"
+                                        :data-type="
+                                            item.mime_type.startsWith('video/')
+                                                ? 'video'
+                                                : 'image'
+                                        "
+                                        data-gallery="kapsule-gallery"
+                                    >
+                                        <img
+                                            v-if="
+                                                item.mime_type.startsWith(
+                                                    'image/',
+                                                )
+                                            "
+                                            :src="item.thumb || item.url"
+                                            class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+                                        />
+
+                                        <div v-else class="relative h-48">
+                                            <video
+                                                class="w-full h-48 object-cover pointer-events-none"
                                             >
-                                                <PlayIcon
-                                                    class="h-8 w-8 text-white fill-current"
+                                                <source
+                                                    :src="item.url"
+                                                    :type="item.mime_type"
                                                 />
+                                            </video>
+                                            <div
+                                                class="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors"
+                                            >
+                                                <div
+                                                    class="p-3 rounded-full bg-white/20 backdrop-blur-sm border border-white/30"
+                                                >
+                                                    <PlayIcon
+                                                        class="h-8 w-8 text-white fill-current"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </a>
+                                    </a>
+                                </div>
+                                <p>
+                                    <span
+                                        class="text-sm text-gray-400 font-mono"
+                                        >Ajouté par : {{ item.username }}</span
+                                    >
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -461,6 +477,9 @@ const props = defineProps({
     },
 });
 
+const maxFileSizeMo = computed(() =>
+    (page.props.limits.max_file_size / 1024).toFixed(0),
+);
 const toast = useToast();
 
 function formatDate(dateString) {

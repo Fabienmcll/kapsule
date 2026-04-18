@@ -113,5 +113,7 @@
     "kapsule_deleted": "Kapsule supprimée avec succès.",
     "media_delete_failed": "Échec de la suppression du média. Veuillez réessayer.",
     "media_deleted": "Média supprimé avec succès.",
-    "delete_media_confirm": "Êtes-vous sûr de vouloir supprimer ce média ? Cette action est irréversible."
+    "delete_media_confirm": "Êtes-vous sûr de vouloir supprimer ce média ? Cette action est irréversible.",
+    "upload_failed": "Échec de l'upload du média. Veuillez vérifier si le fichier n'est pas trop volumineux.",
+    "upload_too_large": "Le fichier est trop volumineux. La taille maximale autorisée est de 100 Mo."
 }

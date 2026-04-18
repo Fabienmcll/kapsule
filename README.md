@@ -31,3 +31,5 @@ Le projet repose sur la stack **VILT**.
 Contrairement à une application classique où chaque clic recharge la page, **Inertia.js** permet à Laravel de renvoyer des composants Vue.js. Seules les données (JSON) transitent entre le serveur et le client, rendant la navigation instantanée.
 
 ---
+
+Mise en prod : Vérifier que nginx accepte les 100Mo (max)
