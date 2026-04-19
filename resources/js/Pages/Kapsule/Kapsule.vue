@@ -239,12 +239,27 @@
                                 :kapsule-id="kapsule.id"
                                 @upload-success="handleUploadSuccess"
                                 @upload-error-too-large="
-                                    toast.error($t('upload_too_large'))
+                                    toast.error(
+                                        $t('upload_too_large', {
+                                            size: maxFileSizeFormatted,
+                                        }),
+                                    )
                                 "
                                 @upload-error="toast.error($t('upload_failed'))"
                             />
+
+                            <div
+                                class="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500 font-medium"
+                            >
+                                <InformationCircleIcon
+                                    class="h-4 w-4 text-blue-400"
+                                />
+                                <span>
+                                    {{ $t("max_file_size") }}
+                                    {{ maxFileSizeFormatted }}
+                                </span>
+                            </div>
                         </div>
-                        <p>Maximum file size: {{ maxFileSizeMo }} MB</p>
 
                         <div
                             class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mt-8"
@@ -320,7 +335,7 @@
                                 <p>
                                     <span
                                         class="text-sm text-gray-400 font-mono"
-                                        >Ajouté par : {{ item.username }}</span
+                                        >{{ item.username }}</span
                                     >
                                 </p>
                             </div>
@@ -477,9 +492,13 @@ const props = defineProps({
     },
 });
 
-const maxFileSizeMo = computed(() =>
-    (page.props.limits.max_file_size / 1024).toFixed(0),
-);
+const maxFileSizeFormatted = computed(() => {
+    const sizeInMo = page.props.limits.max_file_size / 1024;
+    if (sizeInMo >= 1024) {
+        return (sizeInMo / 1024).toFixed(1).replace(".0", "") + " Go";
+    }
+    return sizeInMo.toFixed(0) + " Mo";
+});
 const toast = useToast();
 
 function formatDate(dateString) {
